@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A1013">
+<meta name="description" content="FB、IG、Threads 的 SEO／GEO 文案生成與健檢：站內搜尋找得到、Google 與 AI 引擎願意引用">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="搜尋引用文案">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#0A1013}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>社群搜尋引用文案台</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* 版面：攝影棚夜景——主視覺是三個發光螢幕（素材圖右側），文字放在左側暗場；下方是「簡報單」表單與結果區，手機改為上下堆疊。
+   刻意只做深色：這套視覺來自打光的攝影棚，不另做淺色版。 */
+:root{
+  --bg:#0A1013; --bg2:#0F181C; --surface:#121C21; --surface2:#17242A; --sunk:#0C1418; --ink:#E7F0F2; --muted:#8EA2A9; --line:#22343B;
+  --accent:#3FD8EA; --accent2:#22B6CC; --accent-ink:#03161A; --accent-soft:#0D2F36; --glow:rgba(63,216,234,.28);
+  --amber:#F2A54A; --fb:#8DB6FF;
+  --good:#52D38F; --warn:#F2B55C; --bad:#FF7B6F; --good-soft:#10301F; --warn-soft:#33260F; --bad-soft:#3A1714;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-num:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
+  --r:12px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(1200px 500px at 0% -10%,rgba(242,165,74,.07),transparent 60%),radial-gradient(900px 600px at 100% 0%,rgba(63,216,234,.06),transparent 60%);background-attachment:fixed;
+  color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3,h4{text-wrap:balance;margin:0;line-height:1.3}
+
+/* 主視覺 */
+.hero{position:relative;border-radius:18px;overflow:hidden;background:var(--bg2);border:1px solid var(--line);min-height:clamp(300px,36vw,430px);display:flex;align-items:center}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 260px at 8% 0%,rgba(242,165,74,.16),transparent 70%);pointer-events:none}
+.hero-img{position:absolute;top:0;right:0;bottom:0;width:min(60%,620px);background:url("hero.webp") center 40%/cover no-repeat;animation:heroIn 1.4s ease-out both}
+.hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg2) 0%,rgba(15,24,28,.75) 18%,rgba(15,24,28,0) 50%),linear-gradient(0deg,rgba(15,24,28,.6),transparent 30%)}
+@keyframes heroIn{from{transform:scale(1.04);opacity:.6}to{transform:none;opacity:1}}
+.hero-copy{position:relative;z-index:1;max-width:min(54%,600px);padding:clamp(22px,4vw,48px);display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.kicker{font-family:var(--font-num);font-size:.74rem;letter-spacing:.22em;color:var(--accent);font-weight:700}
+.hero h1{font-size:clamp(1.9rem,3.6vw,2.9rem);font-weight:900;letter-spacing:.02em;text-shadow:0 0 28px rgba(63,216,234,.22)}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{margin:0;color:#B8C8CD;font-size:clamp(.9rem,1.25vw,1.02rem);max-width:40ch}
+.stamps{display:flex;flex-wrap:wrap;gap:8px}
+.stamp{font-family:var(--font-num);font-size:.76rem;font-weight:700;letter-spacing:.06em;padding:4px 12px;border-radius:999px;border:1px solid rgba(63,216,234,.45);color:var(--ink);background:rgba(63,216,234,.08);box-shadow:0 0 14px rgba(63,216,234,.15)}
+.stamp.amb{border-color:rgba(242,165,74,.5);background:rgba(242,165,74,.08);box-shadow:0 0 14px rgba(242,165,74,.12)}
+@media (max-width:760px){
+  .hero{flex-direction:column;align-items:stretch;min-height:0}
+  .hero-img{position:relative;width:100%;max-width:100%;aspect-ratio:16/10;background-position:center 35%}
+  .hero-img::after{background:linear-gradient(0deg,var(--bg2) 0%,rgba(15,24,28,0) 45%)}
+  .hero-copy{max-width:none;margin-top:-56px;padding:0 18px 22px}
+}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:999px;overflow-x:auto;max-width:100%}
+.tabs button{border:0;background:transparent;color:var(--muted);font:500 .92rem var(--font-body);padding:7px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(63,216,234,.45),0 0 16px rgba(63,216,234,.15)}
+.pwa-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:var(--r);padding:10px 14px;font-size:.86rem}
+.pwa-note p{margin:0;flex:1 1 320px;color:#C3D1D5}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.grid{display:grid;gap:18px;grid-template-columns:1fr}
+@media (min-width:980px){.grid{grid-template-columns:380px minmax(0,1fr)}}
+.panel{background:linear-gradient(180deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.panel h2{font-size:1.05rem}
+.eyebrow{font-family:var(--font-num);font-size:.72rem;letter-spacing:.16em;color:var(--accent);font-weight:700}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.86rem;font-weight:700}
+.field small{color:var(--muted);font-size:.78rem;line-height:1.5}
+.req{color:var(--bad);margin-left:2px}
+input[type=text],select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent2)}
+textarea{resize:vertical;min-height:70px;line-height:1.6}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:500 .9rem var(--font-body);padding:8px 14px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--accent2)}
+.btn.primary{background:linear-gradient(180deg,#62E7F5,var(--accent2));border-color:transparent;color:var(--accent-ink);font-weight:700;box-shadow:0 0 0 1px rgba(63,216,234,.4),0 6px 22px rgba(63,216,234,.25)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:4px 10px;font-size:.8rem}
+.status{font-size:.85rem;color:var(--muted);min-height:1.4em}
+.status.err{color:var(--bad)}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--warn-soft);color:var(--warn)}
+
+/* 結果上方：預覽＋分數 */
+.top{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:760px){.top{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+.pchips{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.pchips button{border:1px solid var(--line);background:var(--sunk);color:var(--muted);font:700 .8rem var(--font-num);padding:3px 12px;border-radius:999px;cursor:pointer}
+.pchips button[aria-selected="true"]{background:var(--accent-soft);border-color:rgba(63,216,234,.6);color:var(--accent);box-shadow:0 0 12px rgba(63,216,234,.2)}
+.fbpost{border:1px solid rgba(63,216,234,.35);border-radius:var(--r);background:var(--sunk);padding:14px 16px;min-width:0;box-shadow:0 0 0 1px rgba(63,216,234,.08),0 0 28px rgba(63,216,234,.10)}
+.fbhead{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:900;box-shadow:inset 0 0 0 1px rgba(63,216,234,.4)}
+.fbhead b{display:block;font-size:.9rem}
+.fbhead span{font-size:.75rem;color:var(--muted)}
+.fbtext{white-space:pre-wrap;font-size:.93rem;word-break:break-word}
+.fbtext .more{color:var(--muted);font-weight:700}
+.fbtext .tagx{color:var(--fb)}
+.fbnote{font-size:.76rem;color:var(--muted);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.thpost{border-left:2px solid var(--line);padding:0 0 10px 12px;margin-left:4px}
+.thpost:last-child{padding-bottom:0}
+.thpost .len{display:block;font-family:var(--font-num);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.thpost .len.over{color:var(--bad)}
+.cite{margin-top:12px;border-radius:var(--r);background:var(--sunk);border:1px solid var(--line);border-left:3px solid var(--amber);padding:12px 14px;font-size:.88rem}
+.cite .eyebrow{display:block;margin-bottom:4px;color:var(--amber)}
+.scores{display:flex;flex-direction:column;gap:12px;min-width:0}
+.rings{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ring{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:center}
+.ring svg{flex:none}
+.ring .n{font-family:var(--font-num);font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+.ring .l{font-size:.8rem;color:var(--muted);line-height:1.4}
+.checks{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:6px 12px;max-height:340px;overflow:auto}
+.checks details{border-bottom:1px solid var(--line);padding:6px 0}
+.checks details:last-child{border-bottom:0}
+.checks summary{cursor:pointer;font-size:.86rem;display:flex;gap:8px;align-items:baseline;list-style:none}
+.checks summary::-webkit-details-marker{display:none}
+.checks .mk{flex:none;width:18px;text-align:center;font-weight:900}
+.checks .ok .mk{color:var(--good)} .checks .no .mk{color:var(--bad)}
+.checks .w{margin-left:auto;font-family:var(--font-num);color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums}
+.checks p{margin:4px 0 2px 26px;font-size:.8rem;color:var(--muted)}
+.grouplabel{font-family:var(--font-num);font-size:.72rem;font-weight:700;letter-spacing:.14em;color:var(--muted);padding:8px 0 2px}
+.risks{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem}
+.chip{padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--bad-soft);color:var(--bad)}
+.chip.okc{background:var(--good-soft);color:var(--good)}
+
+/* 逐段卡片 */
+.sections{display:flex;flex-direction:column;gap:12px}
+.sec{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.sec.key{border-color:rgba(63,216,234,.45);box-shadow:0 0 0 1px rgba(63,216,234,.1),0 0 24px rgba(63,216,234,.08)}
+.sec.key h3{color:var(--accent)}
+.sechead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px}
+.sechead h3{font-size:.98rem}
+.md{font-size:.92rem;overflow-wrap:anywhere}
+.md p{margin:.4em 0}
+.md ul,.md ol{margin:.3em 0;padding-left:1.4em}
+.md h4{font-size:.92rem;margin:.7em 0 .2em}
+.md code{background:var(--surface2);padding:0 4px;border-radius:4px;font-size:.85em}
+.md pre{background:var(--surface2);padding:10px;border-radius:8px;overflow-x:auto;font-size:.8rem}
+.tbl{overflow-x:auto}
+.md table{border-collapse:collapse;font-size:.84rem;min-width:100%}
+.md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.md th{background:var(--surface2)}
+.md .todo{background:var(--warn-soft);color:var(--warn);padding:0 4px;border-radius:4px}
+.empty{color:var(--muted);font-size:.9rem;padding:24px;text-align:center;border:1px dashed var(--line);border-radius:var(--r)}
+.hist{display:flex;flex-direction:column;gap:8px}
+.hist button{text-align:left;border:1px solid var(--line);background:var(--sunk);color:var(--ink);border-radius:8px;padding:10px 12px;cursor:pointer;font:inherit}
+.hist button:hover{border-color:var(--accent2)}
+.hist small{color:var(--muted);display:block;font-size:.78rem}
+.guide{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.guide div{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.84rem;color:#C3D1D5}
+.guide b{display:block;margin-bottom:2px;color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="hero-img" role="img" aria-label="攝影棚裡三個發光螢幕，播放保養品示範、教學與開箱影片"></div>
+  <div class="hero-copy">
+    <span class="kicker">SEO × GEO STUDIO</span>
+    <h1>社群搜尋<em>引用</em>文案台</h1>
+    <p>輸入主題與關鍵字，一次產出三個平台的寫法：站內搜尋找得到，Google 與 AI 引擎願意引用。現有貼文也能貼進來健檢打分。</p>
+    <div class="stamps"><span class="stamp">Facebook</span><span class="stamp">Instagram</span><span class="stamp">Threads</span><span class="stamp amb">AI 引用分數</span></div>
+  </div>
+</header>
+<div class="pwa-note" id="pwa-note" hidden>
+  <p>網站版：貼文健檢、即時打分、寫法原則與範例都能離線使用。AI 生成與改寫需要在 claude.ai 版開啟（使用自己的 Claude 帳號）。</p>
+  <button class="btn sm" type="button" id="pwa-install" hidden>加入主畫面</button>
+  <span class="status" id="pwa-ios" hidden>iPhone：用 Safari 開啟，點「分享」→「加入主畫面」。</span>
+</div>
+<div class="bar">
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-gen" aria-selected="true" data-v="gen">生成貼文</button>
+    <button role="tab" id="t-chk" aria-selected="false" data-v="chk">貼文健檢</button>
+    <button role="tab" id="t-his" aria-selected="false" data-v="his">紀錄</button>
+    <button role="tab" id="t-how" aria-selected="false" data-v="how">寫法原則</button>
+  </nav>
+</div>
+
+<!-- 生成 -->
+<section id="v-gen" class="grid">
+  <form id="gen-form" class="panel" autocomplete="off">
+    <div><span class="eyebrow">簡報單</span> <span class="tag" id="ex-tag">已填入範例</span></div>
+    <div class="field"><label for="f-topic">主題或產品<span class="req">*</span></label>
+      <input type="text" id="f-topic" value="敏感肌夏季防曬怎麼選"></div>
+    <div class="field"><label for="f-plat">發文平台</label>
+      <select id="f-plat"><option value="all" selected>三平台一次產出</option><option value="fb">Facebook</option><option value="ig">Instagram</option><option value="th">Threads</option></select></div>
+    <div class="row2">
+      <div class="field"><label for="f-kw">核心關鍵字<span class="req">*</span></label>
+        <input type="text" id="f-kw" value="敏感肌防曬"></div>
+      <div class="field"><label for="f-ind">產業</label>
+        <select id="f-ind"><option value="gen">一般</option><option value="cos" selected>保養品（化粧品）</option><option value="hf">保健食品</option><option value="mlm">直銷招募／經營</option></select></div>
+    </div>
+    <div class="field"><label for="f-long">長尾關鍵字／大家會問的問題</label>
+      <textarea id="f-long" rows="3">物理性防曬 化學性防曬 差別
+防曬 SPF 越高越好嗎
+防曬 要擦多少</textarea>
+      <small>一行一個。可從 FB 搜尋框、Google「其他人也問了」、留言區常見問題蒐集。</small></div>
+    <div class="field"><label for="f-aud">目標受眾</label>
+      <input type="text" id="f-aud" value="25–40 歲通勤上班族女性，容易泛紅、怕悶痘"></div>
+    <div class="field"><label for="f-who">發文身分與經驗（E-E-A-T）</label>
+      <input type="text" id="f-who" value="保養品牌教育講師，教學 10 年"></div>
+    <div class="field"><label for="f-facts">可用的事實與數據（附來源）</label>
+      <textarea id="f-facts" rows="4">SPF30 約阻擋 97% UVB、SPF50 約 98%（常見皮膚科衛教資料）
+防曬係數測試用量為每平方公分 2 毫克（ISO 24444 國際標準）
+流汗、擦汗後建議每 2–3 小時補擦</textarea>
+      <small>AI 引擎偏好有出處的具體數字。沒提供的數字，系統會標成〔待補〕，不會自己編。</small></div>
+    <div class="row2">
+      <div class="field"><label for="f-type">貼文類型</label>
+        <select id="f-type"><option>知識教學</option><option>問答 FAQ</option><option>清單懶人包</option><option>比較評測</option><option>經驗故事</option><option>產品介紹</option><option>活動公告</option></select></div>
+      <div class="field"><label for="f-tone">語氣</label>
+        <select id="f-tone"><option>專業親切</option><option>閨蜜聊天</option><option>權威專家</option><option>輕鬆幽默</option></select></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="f-len">長度</label>
+        <select id="f-len"><option value="350">短（約 350 字）</option><option value="650" selected>中（約 650 字）</option><option value="1000">長（約 1000 字）</option></select></div>
+      <div class="field"><label for="f-cta">行動呼籲</label>
+        <input type="text" id="f-cta" value="留言分享膚況，下一篇幫你挑"></div>
+    </div>
+    <div class="field"><label for="f-link">要放的連結</label>
+      <input type="text" id="f-link" placeholder="商品頁、文章或表單網址（會放在置頂留言）">
+      <small>FB 放置頂留言、IG 放個人檔案、Threads 放在串文最後一則。</small></div>
+    <div class="btns">
+      <button class="btn primary" id="g-go" type="submit">用 Claude 生成</button>
+      <button class="btn" id="g-stop" type="button" hidden>停止</button>
+      <button class="btn" id="g-clear" type="button">清空表單</button>
+    </div>
+    <div class="status" id="g-status" role="status"></div>
+  </form>
+
+  <div class="panel" id="out-panel">
+    <div class="btns" style="justify-content:space-between">
+      <div><span class="eyebrow">結果</span> <span class="tag" id="out-tag">範例輸出</span></div>
+      <div class="btns">
+        <button class="btn sm" id="o-copy-post" type="button">複製貼文</button>
+        <button class="btn sm" id="o-copy-all" type="button">複製全部</button>
+        <button class="btn sm" id="o-to-chk" type="button">送去健檢</button>
+      </div>
+    </div>
+    <div class="top">
+      <div>
+        <div class="pchips" id="pv-plats" role="tablist" aria-label="預覽平台"></div>
+        <div class="fbpost">
+          <div class="fbhead"><div class="avatar" id="pv-av">粉</div><div><b id="pv-name">你的帳號</b><span id="pv-sub">剛剛 · 公開</span></div></div>
+          <div class="fbtext" id="pv-text"></div>
+          <div class="fbnote" id="pv-note"></div>
+        </div>
+        <div class="cite"><span class="eyebrow">AI 搜尋可能這樣引用</span><div id="pv-cite"></div></div>
+      </div>
+      <div class="scores" id="o-scores"></div>
+    </div>
+    <div class="sections" id="o-sections"></div>
+  </div>
+</section>
+
+<!-- 健檢 -->
+<section id="v-chk" class="grid" hidden>
+  <div class="panel">
+    <div><span class="eyebrow">貼上現有貼文</span></div>
+    <div class="row2">
+      <div class="field"><label for="h-plat">平台</label>
+        <select id="h-plat"><option value="fb">Facebook</option><option value="ig">Instagram</option><option value="th">Threads</option></select></div>
+      <div class="field"><label for="h-kw">核心關鍵字</label><input type="text" id="h-kw" value="敏感肌防曬"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="h-ind">產業</label>
+        <select id="h-ind"><option value="gen">一般</option><option value="cos" selected>保養品（化粧品）</option><option value="hf">保健食品</option><option value="mlm">直銷招募／經營</option></select></div>
+      <div></div>
+    </div>
+    <div class="field"><label for="h-long">長尾關鍵字（一行一個）</label><textarea id="h-long" rows="2">物理性防曬
+SPF</textarea></div>
+    <div class="field"><label for="h-text">貼文內容</label><textarea id="h-text" rows="14"></textarea>
+      <small>邊打邊算分，不需要網路；改寫才會呼叫 Claude。</small></div>
+    <div class="btns">
+      <button class="btn primary" id="h-go" type="button">用 Claude 改寫成高分版</button>
+      <button class="btn" id="h-stop" type="button" hidden>停止</button>
+    </div>
+    <div class="status" id="h-status" role="status"></div>
+  </div>
+  <div class="panel">
+    <div class="scores" id="h-scores"></div>
+    <div class="sections" id="h-out"></div>
+  </div>
+</section>
+
+<!-- 紀錄 -->
+<section id="v-his" class="panel" hidden>
+  <h2>最近生成</h2>
+  <p class="status">紀錄只存在這台裝置的瀏覽器，最多 12 筆。</p>
+  <div class="hist" id="his-list"></div>
+</section>
+
+<!-- 原則 -->
+<section id="v-how" class="panel" hidden>
+  <h2>這個工具怎麼判斷「會被找到、會被引用」</h2>
+  <div class="grouplabel">三個平台的差異</div>
+  <div class="guide">
+    <div><b>Facebook</b>「查看更多」前約 70 字；Hashtag 2–5 個；正文不放連結，改放置頂留言；適合 500–800 字的完整教學。</div>
+    <div><b>Instagram</b>圖說「更多」前約 125 字元、上限 2,200 字元；Hashtag 3–5 個；圖說連結不能點，寫「連結在個人檔案」；關鍵字也要放進輪播圖文字與替代文字。</div>
+    <div><b>Threads</b>每則上限 500 字元、只能加 1 個主題標籤；用【1/4】串文拆重點，第一則就給答案；可放 1 個連結，建議放最後一則。</div>
+  </div>
+  <div class="grouplabel">SEO：讓站內搜尋與 Google 找得到</div>
+  <div class="guide">
+    <div><b>關鍵字放第一行</b>FB、IG、Threads 的搜尋和 Google 都看開頭；摺疊前只露出 1–3 行。</div>
+    <div><b>用大家搜尋的說法</b>寫「敏感肌防曬」而不是品牌內部用語；長尾問句直接當小標。</div>
+    <div><b>短段落、條列</b>每段 1–3 句，空行分隔，手機好讀，停留時間更長。</div>
+    <div><b>Hashtag 少而準</b>含核心關鍵字；FB 2–5、IG 3–5、Threads 1 個，太多會像廣告。</div>
+    <div><b>連結放對位置</b>FB 置頂留言、IG 個人檔案、Threads 串文最後一則。</div>
+    <div><b>引導留言</b>具體提問比「歡迎留言」更能帶出互動與擴散。</div>
+  </div>
+  <div class="grouplabel">GEO：讓 ChatGPT、Gemini、Perplexity、Google AI 摘要願意引用</div>
+  <div class="guide">
+    <div><b>答案先行</b>第一句就回答問題：「X 是…」「答案是…」，AI 最常直接摘這種句子。</div>
+    <div><b>具體數字＋出處</b>「SPF50 約阻擋 98% UVB」比「防護力很強」更容易被引用。</div>
+    <div><b>問答結構</b>Q／A 一問一答，每個答案 40–80 字、單獨拿出來也看得懂。</div>
+    <div><b>寫清楚是誰說的</b>身分、年資、實測經驗，是 E-E-A-T 的「經驗」與「專業」。</div>
+    <div><b>標註時間</b>「2026 年更新」讓 AI 判斷資訊新鮮度。</div>
+    <div><b>少誇飾</b>「最強」「神級」會降低可信度；保養品與保健食品還有法規風險。</div>
+  </div>
+  <p class="status">保養品、保健食品或直銷招募貼文，生成後建議再送「合規文案工作台」複查。</p>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY="seo-geo-fb-v1";
+const store={get(k,d){try{const v=localStorage.getItem(KEY+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(KEY+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- 分頁 ---------- */
+function show(v){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.v===v)));
+  ["gen","chk","his","how"].forEach(x=>$("#v-"+x).hidden=x!==v);
+  if(v==="his")renderHist();
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>show(b.dataset.v));
+
+/* ---------- Markdown ---------- */
+function inline(s){
+  return esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/〔待補[^〕]*〕/g,m=>`<span class="todo">${m}</span>`);
+}
+function md(src){
+  const L=src.replace(/\r/g,"").split("\n");let h="",list=null,para=[],i=0;
+  const flushP=()=>{if(para.length){h+="<p>"+para.map(inline).join("<br>")+"</p>";para=[]}};
+  const closeL=()=>{if(list){h+=`</${list}>`;list=null}};
+  while(i<L.length){
+    const ln=L[i];
+    if(/^```/.test(ln)){flushP();closeL();let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);h+="<pre>"+esc(c.join("\n"))+"</pre>";i++;continue}
+    if(/^\s*\|/.test(ln)){flushP();closeL();const rows=[];while(i<L.length&&/^\s*\|/.test(L[i]))rows.push(L[i++]);
+      const cells=r=>r.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      const body=rows.filter(r=>!/^\s*\|?\s*:?-{2,}/.test(r));
+      h+='<div class="tbl"><table>'+body.map((r,j)=>"<tr>"+cells(r).map(c=>j===0?`<th>${inline(c)}</th>`:`<td>${inline(c)}</td>`).join("")+"</tr>").join("")+"</table></div>";continue}
+    let m;
+    if((m=ln.match(/^#{1,6}\s+(.*)/))){flushP();closeL();h+=`<h4>${inline(m[1])}</h4>`;i++;continue}
+    if((m=ln.match(/^\s*[-*•]\s+(.*)/))){flushP();if(list!=="ul"){closeL();h+="<ul>";list="ul"}h+=`<li>${inline(m[1])}</li>`;i++;continue}
+    if((m=ln.match(/^\s*\d+[.)]\s+(.*)/))){flushP();if(list!=="ol"){closeL();h+="<ol>";list="ol"}h+=`<li>${inline(m[1])}</li>`;i++;continue}
+    if(!ln.trim()){flushP();closeL();i++;continue}
+    closeL();para.push(ln);i++;
+  }
+  flushP();closeL();return h;
+}
+const plain=s=>s.replace(/\*\*(.+?)\*\*/g,"$1").replace(/`([^`]+)`/g,"$1");
+
+/* ---------- 評分 ---------- */
+const RISK={
+  cos:["治療","治癒","根治","療效","消炎","殺菌","抗菌","修復細胞","細胞再生","再生","醫療級","醫師推薦","藥用","無副作用","100%","百分百","永久","立即見效","消除皺紋","去除疤痕","生髮","抗敏","過敏","預防","改善體質"],
+  hf:["治療","治癒","根治","療效","預防","降血壓","降血糖","降血脂","抗癌","防癌","排毒","減肥","瘦身","燃脂","消脂","增強免疫","提升免疫","醫師推薦","無副作用","保證","100%","立即見效","改善","調節血糖"],
+  mlm:["保證收入","穩賺","躺著賺","被動收入","月入","年薪百萬","零風險","不用推銷","財富自由","輕鬆賺","免費創業","退休金"]
+};
+const PLAT={
+  fb:{name:"Facebook",short:"FB",title:"FB 貼文主文",sec:/FB 貼文/,head:70,min:250,max:1500,tag:[2,5],sub:"剛剛 · 公開",
+    note:"示意：手機版約前 3 行、70 字內會在「查看更多」前顯示，關鍵字與答案要放在這裡。"},
+  ig:{name:"Instagram",short:"IG",title:"IG 圖說",sec:/IG 圖說/,head:60,min:150,max:2200,tag:[3,5],sub:"輪播貼文",
+    note:"示意：IG 圖說約前 2 行（約 125 字元）會在「更多」前顯示；上限 2,200 字元。"},
+  th:{name:"Threads",short:"Threads",title:"Threads 串文",sec:/Threads 串文/,head:80,min:100,max:2000,tag:[0,1],sub:"串文",
+    note:"示意：Threads 每則上限 500 字元、每則只能有 1 個主題標籤；第一則決定讀者會不會點開整串。"}
+};
+const splitThread=t=>{const segs=t.split(/【\s*\d+\s*\/\s*\d+\s*】/).map(s=>s.trim()).filter(Boolean);return segs.length?segs:[t]};
+function cnt(s,w){if(!w)return 0;let n=0,p=0;while((p=s.indexOf(w,p))>-1){n++;p+=w.length}return n}
+function analyze(text,kw,longs,ind,plat){
+  const P=PLAT[plat]||PLAT.fb;
+  const t=plain(text||"").trim();kw=(kw||"").trim();
+  const segs=plat==="th"?splitThread(t):[t];
+  const maxSeg=Math.max(0,...segs.map(s=>[...s].length));
+  const urlN=(t.match(/https?:\/\/|www\./gi)||[]).length;
+  const body=t.replace(/#[^\s#]+/g,"");
+  const len=[...t.replace(/\s/g,"")].length;
+  const paras=t.split(/\n\s*\n/).filter(p=>p.trim());
+  const longest=Math.max(0,...paras.map(p=>[...p.replace(/\s/g,"")].length));
+  const head=[...t].slice(0,P.head).join("");
+  const kwN=cnt(t,kw);
+  const tags=t.match(/#[^\s#，。！？,]+/g)||[];
+  const sentences=t.split(/[。！？!?\n]/).map(s=>s.trim()).filter(Boolean);
+  const first2=sentences.slice(0,2).join("");
+  const nums=(body.match(/\d+(?:\.\d+)?/g)||[]).length;
+  const qa=(t.match(/(^|\n)\s*(Q\d*\s*[:：]|問\s*[:：]|Q\d*\s)/g)||[]).length;
+  const qs=(t.match(/[？?]/g)||[]).length;
+  const listN=(t.match(/(^|\n)\s*([-•▪✅✔☑①②③④⑤⑥⑦⑧⑨]|\d+[.、)）]|[一二三四五六]、|Step\s*\d)/gi)||[]).length;
+  const hype=(t.match(/最強|最好|神級|神器|超級|無敵|第一名|保證|100%|百分百|完美|史上/g)||[]);
+  const lg=(longs||[]).map(s=>s.trim()).filter(Boolean);
+  const lgHit=lg.filter(l=>{const parts=l.split(/\s+/).filter(x=>x.length>1);return parts.length&&parts.some(p=>t.includes(p))}).length;
+  const need=Math.min(2,lg.length);
+  const C=(ok,w,label,tip)=>({ok:!!ok,w,label,tip});
+  const seo=[
+    C(kw&&head.includes(kw),18,`核心關鍵字出現在開頭 ${P.head} 字內`,kw?"把「"+kw+"」放進第一句，最好就是標題句。":"先填核心關鍵字才能判斷。"),
+    C(kwN>=2&&kwN<=6,12,`核心關鍵字出現 2–6 次（目前 ${kwN} 次）`,kwN<2?"在小標、Q&A 或結尾再自然帶到 1–2 次。":"出現太多次會像在塞關鍵字，改用同義詞。"),
+    C(/[？?]|\d/.test(sentences[0]||""),10,"第一句是問句或含數字（鉤子）","用讀者會搜尋的問句開頭，或給一個具體數字。"),
+    plat==="th"
+      ?C(maxSeg<=500&&len>=P.min,10,`每則 500 字元內（最長 ${maxSeg}，共 ${segs.length} 則）`,maxSeg>500?"超過 500 字元的那則拆成兩則，用【1/4】標序號。":"內容太少，補一則做法或 Q&A。")
+      :C(len>=P.min&&len<=P.max,10,`字數 ${P.min}–${P.max}（目前 ${len} 字）`,len<P.min?"太短不容易被當成答案來源，補一段做法或 Q&A。":"太長會被滑走，拆成系列貼文。"),
+    plat==="th"
+      ?C(segs.length>=2||paras.length>=3,10,"拆成串文或短段落","用【1/4】【2/4】拆成 3–5 則，一則講一個重點。")
+      :C(paras.length>=4&&longest<=150,10,"短段落：至少 4 段、每段 150 字內","用空行分段，每段 1–3 句。"),
+    C(tags.length>=P.tag[0]&&tags.length<=P.tag[1],8,plat==="th"?`主題標籤 0–1 個（目前 ${tags.length} 個）`:`Hashtag ${P.tag[0]}–${P.tag[1]} 個（目前 ${tags.length} 個）`,plat==="th"?"Threads 每則只能有 1 個主題標籤，保留最相關的那個。":`留 ${P.tag[0]}–${P.tag[1]} 個與主題直接相關的標籤。`),
+    C(kw&&(tags.some(x=>x.replace("#","").includes(kw.replace(/\s/g,"")))||(plat==="th"&&!tags.length&&segs[0].includes(kw))),5,plat==="th"?"主題標籤（或第一則）含核心關鍵字":"Hashtag 含核心關鍵字","加一個 #"+(kw||"關鍵字").replace(/\s/g,"")+"。"),
+    plat==="th"
+      ?C(urlN<=1,7,`連結 1 個以內（目前 ${urlN} 個）`,"只留 1 個連結，放在最後一則。")
+      :C(!urlN,7,"正文沒有外部連結",plat==="ig"?"IG 圖說的網址不能點，改寫「連結在個人檔案」。":"把網址移到置頂留言，正文寫「連結在留言」。"),
+    C(/留言|回覆|分享|收藏|私訊|告訴我|你呢|\+1|按讚|追蹤|轉發|點連結|填表|個人檔案/.test(t),10,"有互動提問或行動呼籲",plat==="ig"?"結尾請讀者收藏或留言回答一個具體問題。":"結尾問一個具體、好回答的問題。"),
+    C(lg.length?lgHit>=need:true,10,lg.length?`長尾詞覆蓋 ${lgHit}/${lg.length}`:"長尾詞覆蓋（未提供，略過）","把讀者常問的問題直接寫成小標或 Q。")
+  ];
+  const geo=[
+    C(/是|指|就是|答案|關鍵在|重點是|原因是|取決於/.test(first2),18,"答案先行：前兩句直接回答或下定義","第一、二句寫成「X 是…／答案是…」，AI 最常直接摘錄。"),
+    C(nums>=3,15,`具體數字至少 3 個（目前 ${nums} 個）`,"補上比例、用量、時間、次數等可驗證數字。"),
+    C(/根據|研究|調查|報告|資料來源|指出|標準|衛福部|食藥署|國健署|期刊|統計|ISO|WHO|文獻|官方/.test(t),15,"有依據或出處","寫出數字從哪來：國際標準、官方衛教、研究或實測。"),
+    C(qa>=1||qs>=2,14,"有問答結構","加 1–3 組 Q／A，每個答案 40–80 字、單獨看也懂。"),
+    C(listN>=2,10,"有條列或步驟","把做法拆成 ①②③ 或「步驟 1、2、3」。"),
+    C(/我是|身為|從業|年經驗|講師|顧問|藥師|營養師|皮膚科|專家|團隊|實測|親身|教學|\d+\s*年/.test(t),10,"寫出發文者身分或經驗（E-E-A-T）","一句話交代你是誰、做這行多久、是否親自試過。"),
+    C(/20\d\d|今年|更新|最新/.test(t),8,"有時間標記","加上「2026 年整理」或「最新更新」。"),
+    C(hype.length<=1,10,`誇飾詞 1 個以內（目前 ${hype.length} 個）`,"把「最強、神級、保證」換成具體事實。")
+  ];
+  const sc=a=>a.reduce((s,c)=>s+(c.ok?c.w:0),0);
+  const rw=RISK[ind]||[];
+  const risks=[...new Set(rw.filter(w=>t.includes(w)))];
+  return{seo,geo,seoS:sc(seo),geoS:sc(geo),risks,ind,empty:!t,plat};
+}
+function ring(n,label,sub){
+  const r=26,c=2*Math.PI*r,col=n>=80?"var(--good)":n>=60?"var(--warn)":"var(--bad)";
+  return `<div class="ring"><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c*n/100} ${c}" transform="rotate(-90 32 32)"/></svg><div><div class="n">${n}</div><div class="l">${label}<br>${sub}</div></div></div>`;
+}
+function renderScores(el,a){
+  if(a.empty){el.innerHTML='<div class="empty">貼文內容出現後會自動打分。</div>';return}
+  const list=(arr)=>arr.map(c=>`<details class="${c.ok?"ok":"no"}"${c.ok?"":" open"}><summary><span class="mk">${c.ok?"✓":"✕"}</span><span>${esc(c.label)}</span><span class="w">${c.ok?c.w:0}/${c.w}</span></summary>${c.ok?"":`<p>${esc(c.tip)}</p>`}</details>`).join("");
+  const riskTxt=a.ind==="gen"?"":(a.risks.length?a.risks.map(w=>`<span class="chip">${esc(w)}</span>`).join("")+'<span class="status">建議送合規文案工作台複查</span>':'<span class="chip okc">未比對到常見違規詞</span>');
+  const pn=(PLAT[a.plat]||PLAT.fb).short;
+  el.innerHTML=`<div class="rings">${ring(a.seoS,pn+" SEO 分數","找得到")}${ring(a.geoS,pn+" GEO 分數","被引用")}</div>
+  ${riskTxt?`<div class="risks"><b style="font-size:.82rem">法規用詞</b>${riskTxt}</div>`:""}
+  <div class="checks"><div class="grouplabel">SEO</div>${list(a.seo)}<div class="grouplabel">GEO</div>${list(a.geo)}</div>`;
+}
+
+/* ---------- 輸出解析與呈現 ---------- */
+function parseSections(text){
+  const parts=text.split(/^##\s+/m);const out=[];
+  parts.forEach((p,i)=>{if(i===0&&!p.trim())return;if(i===0){out.push({title:"",body:p});return}
+    const nl=p.indexOf("\n");out.push({title:(nl<0?p:p.slice(0,nl)).trim(),body:nl<0?"":p.slice(nl+1)})});
+  return out;
+}
+const findSec=(secs,re)=>secs.find(s=>re.test(s.title));
+const platsIn=text=>{const secs=parseSections(text);return Object.keys(PLAT).filter(k=>findSec(secs,PLAT[k].sec))};
+function postOf(text,plat){const secs=parseSections(text);const s=plat?findSec(secs,PLAT[plat].sec):findSec(secs,/貼文主文|IG 圖說|Threads 串文/);return s?plain(s.body).trim():""}
+function citeOf(text){const secs=parseSections(text);const s=findSec(secs,/可引用/);
+  if(s){const p=plain(s.body).split(/\n\s*\n/).map(x=>x.replace(/^\s*[-*#>]+\s*/gm,"").trim()).filter(x=>x&&!/^[(（]/.test(x));if(p[0])return p[0]}
+  const post=postOf(text);return post.split(/\n/)[0]||"";}
+function renderPreview(post,cite,plat){
+  const P=PLAT[plat]||PLAT.fb;
+  const fmt=s=>esc(s).replace(/(#[^\s#，。！？,]+)/g,'<span class="tagx">$1</span>');
+  $("#pv-note").textContent=P.note;$("#pv-sub").textContent=P.sub+" · "+P.name;
+  if(!post){$("#pv-text").innerHTML='<span class="more">生成後在這裡預覽</span>'}
+  else if(plat==="th"){
+    const segs=splitThread(post);
+    $("#pv-text").innerHTML=segs.map((s,i)=>{const n=[...s].length;return `<div class="thpost">${fmt(s)}<span class="len${n>500?" over":""}">${i+1}/${segs.length} · ${n}/500 字元</span></div>`}).join("");
+  }else{
+    const lim=plat==="ig"?60:70,maxL=plat==="ig"?2:3;
+    const lines=post.split("\n");let shown="",cut=false,count=0;
+    for(const ln of lines){if(count>=maxL||[...shown].length>=lim){cut=true;break}const room=lim-[...shown].length;
+      if([...ln].length>room){shown+=[...ln].slice(0,room).join("");cut=true;break}shown+=ln+"\n";count++}
+    shown=shown.replace(/\n+$/,"");
+    $("#pv-text").innerHTML=fmt(shown)+(cut?`… <span class="more">${plat==="ig"?"更多":"查看更多"}</span>`:"");
+  }
+  $("#pv-cite").textContent=cite||"生成後顯示最可能被摘錄的段落。";
+  const who=$("#f-who").value.trim();$("#pv-av").textContent=(who||"你")[0];
+}
+let current="",curPlat="fb";
+function drawPlat(){
+  const post=postOf(current,curPlat);
+  renderPreview(post,citeOf(current),curPlat);
+  if(post)renderScores($("#o-scores"),analyze(post,$("#f-kw").value,$("#f-long").value.split("\n"),$("#f-ind").value,curPlat));
+  else $("#o-scores").innerHTML="";
+}
+function renderOutput(text,{final=false}={}){
+  current=text;
+  const secs=parseSections(text);
+  const ps=platsIn(text);if(ps.length&&!ps.includes(curPlat))curPlat=ps[0];
+  $("#pv-plats").innerHTML=ps.map(k=>`<button type="button" role="tab" aria-selected="${k===curPlat}" data-p="${k}">${PLAT[k].short}</button>`).join("");
+  $("#pv-plats").querySelectorAll("button").forEach(b=>b.onclick=()=>{curPlat=b.dataset.p;$("#pv-plats").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",String(x===b)));drawPlat()});
+  $("#o-sections").innerHTML=secs.length?secs.map((s,i)=>`<article class="sec${/貼文主文|IG 圖說|Threads 串文|可引用/.test(s.title)?" key":""}"><div class="sechead"><h3>${esc(s.title||"說明")}</h3><button class="btn sm" type="button" data-copy="${i}">複製</button></div><div class="md">${md(s.body)}</div></article>`).join(""):'<div class="empty">尚未產生內容。</div>';
+  $("#o-sections").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copy(plain(secs[+b.dataset.copy].body).trim(),$("#g-status")));
+  drawPlat();
+}
+async function copy(t,st){
+  try{await navigator.clipboard.writeText(t);st.className="status";st.textContent="已複製。"}
+  catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+    let ok=false;try{ok=document.execCommand("copy")}catch(_){}ta.remove();st.textContent=ok?"已複製。":"瀏覽器擋住複製，請手動選取文字。"}
+}
+$("#o-copy-post").onclick=()=>copy(postOf(current,curPlat),$("#g-status"));
+$("#o-copy-all").onclick=()=>copy(plain(current),$("#g-status"));
+$("#o-to-chk").onclick=()=>{$("#h-text").value=postOf(current,curPlat);$("#h-plat").value=curPlat;$("#h-kw").value=$("#f-kw").value;$("#h-long").value=$("#f-long").value;$("#h-ind").value=$("#f-ind").value;runChk();show("chk")};
+
+/* ---------- Claude ---------- */
+let sampleP=null;
+function getSample(){if(!sampleP)sampleP=(window.claude&&claude.use)?claude.use("sample").catch(()=>null):Promise.resolve(null);return sampleP}
+const ERR={not_granted:"你沒有允許這個頁面使用 Claude。重新整理頁面可再次選擇允許。",sampling_disabled:"這個帳號目前無法使用 Claude。",rate_limited:"使用太頻繁或已達用量上限，請稍後再試。",session_expired:"登入已過期，請重新登入 claude.ai。",refused:"Claude 拒絕處理這段內容，請調整後再試。",prompt_too_large:"內容太長，請縮短後再試。",empty_completion:"沒有得到回覆，請再試一次。"};
+const errMsg=e=>ERR[e&&e.code]||"連線中斷，請再試一次。";
+const IND={gen:"一般產業",cos:"保養品（台灣《化粧品衛生安全管理法》：不得宣稱醫療效能，如治療、消炎、修復細胞、醫師推薦、無副作用）",hf:"保健食品（台灣《食品安全衛生管理法》與健康食品管理法：一般食品不得宣稱療效或預防疾病，未取得健康食品認證不得宣稱保健功效）",mlm:"直銷招募／經營（台灣《多層次傳銷管理法》與公平交易法：不得誇大或保證收入、不得暗示無風險）"};
+const PRULES={
+  fb:"Facebook：第一行就出現核心關鍵字並直接回答問題（手機版約前 70 字會在「查看更多」前顯示）；每段 1–3 句、段與段空一行；條列用 ①②③ 或 ✅；emoji 每段最多 1 個；Hashtag 2–5 個且含核心關鍵字，放最後；正文不放任何網址（連結放置頂留言）；結尾用一個具體好回答的問題引導留言。",
+  ig:"Instagram：圖說第一行含核心關鍵字並給答案（約前 125 字元會在「更多」前顯示），全文 2,200 字元內；搭配 5 張輪播圖，圖說要提示「滑到最後一張」；條列用 ✅；Hashtag 3–5 個且含核心關鍵字，放最後；圖說不放網址，改寫「連結在個人檔案」；結尾請讀者收藏或留言回答具體問題。",
+  th:"Threads：寫成 3–5 則串文，每則開頭標【1/4】這種序號，每則 500 字元內、一則一個重點；第一則就給答案並含核心關鍵字；口語、像在對話；整串只在最後一則放 1 個主題標籤（#核心關鍵字）；如有連結只放在最後一則；最後一則用問題邀請回覆。"
+};
+const RULES=`你是熟悉 Facebook、Instagram、Threads 演算法、Google SEO 與生成式引擎最佳化（GEO）的繁體中文（台灣）內容策略師。
+共通原則：
+- SEO：自然使用核心關鍵字 2–5 次，把長尾問句直接寫成小標或 Q；用讀者會搜尋的說法，不用內部術語。
+- GEO：答案先行（「X 是…」「答案是…」）；每個段落拿出來單獨看也成立；具體數字一定附出處；用 Q／A 一問一答，每個答案 40–80 字；寫出發文者身分與經驗（E-E-A-T）；標註「${new Date().getFullYear()} 年整理」；不用「最強、神級、保證、100%」等誇飾。
+- 誠實：只使用使用者提供的事實與數據，或普遍公認、可查證的常識；沒有依據的數字一律寫成〔待補：需要什麼資料〕，絕不編造研究、數據、醫師或客戶見證。
+- 語言：全部使用繁體中文與台灣用語。`;
+function getForm(){const g=id=>$("#"+id).value.trim();return{plat:g("f-plat"),topic:g("f-topic"),kw:g("f-kw"),long:g("f-long"),aud:g("f-aud"),who:g("f-who"),facts:g("f-facts"),type:g("f-type"),tone:g("f-tone"),len:g("f-len"),cta:g("f-cta"),ind:g("f-ind"),link:g("f-link")}}
+function genPrompt(d){
+const ps=d.plat==="all"?["fb","ig","th"]:[d.plat];
+const s2=ps.map(k=>({
+  fb:`## 2. FB 貼文主文\n可直接貼上 FB 的完整貼文（純文字＋emoji，不用 Markdown 粗體或標題符號），約 ${d.len} 字，含 Hashtag。`,
+  ig:`## 2. IG 圖說\n可直接貼上 IG 的完整圖說（純文字＋emoji，不用 Markdown），約 ${Math.round(d.len*0.7)} 字，含 Hashtag。`,
+  th:`## 2. Threads 串文\n3–5 則串文，每則以【1/N】開頭、500 字元內（純文字，不用 Markdown）。`
+}[k])).join("\n");
+const pr=ps.map(k=>"- "+PRULES[k]).join("\n");
+return `${RULES}
+
+平台規則：
+${pr}
+
+產業與法規：${IND[d.ind]}
+
+【簡報單】
+主題或產品：${d.topic}
+核心關鍵字：${d.kw}
+長尾關鍵字／常見問題：
+${d.long||"（未提供，請自行推估 3–5 個台灣使用者會搜尋的問句）"}
+目標受眾：${d.aud||"（未提供）"}
+發文身分與經驗：${d.who||"（未提供，請用〔待補：發文者身分〕）"}
+可用的事實與數據：
+${d.facts||"（未提供）"}
+貼文類型：${d.type}
+語氣：${d.tone}
+發文平台：${ps.map(k=>PLAT[k].name).join("、")}
+行動呼籲：${d.cta||"（自行設計）"}
+要放的連結：${d.link||"（無）"}
+
+請嚴格依照以下標題與順序輸出 Markdown，標題文字不可更改，標題前後不要加任何其他說明：
+## 1. 搜尋意圖與關鍵字地圖
+用表格列出：關鍵字或問句｜搜尋意圖（知識／比較／購買／在地）｜放在貼文哪裡。4–7 列。表格下一句話說明這篇主要回答哪個問題。
+${s2}
+## 3. 替代開頭
+3 個不同角度的第一行（問句型、數字型、反常識型），每個都含核心關鍵字，用條列。
+## 4. AI 可引用段落
+2–3 段「單獨拿出來也完整」的答案段落，每段 60–120 字，第一段必須是定義或直接答案句。這些段落也可放進部落格或官網。
+## 5. FAQ
+3–5 組，用「Q：」「A：」格式，A 為 40–80 字。
+## 6. 置頂留言與連結安排
+${ps.includes("fb")?"FB：一則置頂留言，補充重點":"補充重點"}${d.link?"，並放入連結 "+d.link:""}，最後一句再邀請留言。${ps.includes("ig")?"IG：第一則留言內容，以及個人檔案連結文字建議。":""}${ps.includes("th")?"Threads：說明連結放在第幾則、要不要自己回覆補充。":""}
+## 7. 圖卡文字與替代文字
+${ps.includes("ig")?"IG 輪播 5 張：每張的主標（12 字內）與 1–2 行內文，第 1 張含核心關鍵字、最後一張是懶人包或行動呼籲。":"1 張封面圖卡的主標（12 字內）與副標。"}並附圖片替代文字（alt text，含核心關鍵字，40 字內）。
+## 8. 優化說明與待補資料
+條列：這篇用了哪些 SEO／GEO 手法、哪些〔待補〕需要使用者補資料、法規上要再確認的字句。`;
+}
+let genCtl=null;
+$("#gen-form").addEventListener("submit",async ev=>{
+  ev.preventDefault();const st=$("#g-status");const d=getForm();
+  if(!d.topic||!d.kw){st.className="status err";st.textContent="請先填寫主題與核心關鍵字。";return}
+  const sample=await getSample();
+  if(!sample){st.className="status err";st.textContent="目前的檢視環境無法呼叫 Claude，請在 claude.ai 開啟此頁。健檢功能仍可使用。";return}
+  genCtl=new AbortController();$("#g-go").disabled=true;$("#g-stop").hidden=false;
+  st.className="status";st.textContent="思考中…（約 30–60 秒）";$("#out-tag").hidden=true;
+  $("#o-sections").innerHTML='<div class="empty">思考中…</div>';$("#o-scores").innerHTML="";$("#pv-plats").innerHTML="";
+  curPlat=d.plat==="all"?"fb":d.plat;renderPreview("","",curPlat);
+  let raf=0,latest="";
+  try{
+    const r=await sample(genPrompt(d),{signal:genCtl.signal,cache:false,onText:({text})=>{latest=text;st.textContent="撰寫中…";if(!raf)raf=requestAnimationFrame(()=>{raf=0;renderOutput(latest)})}});
+    renderOutput(r.text,{final:true});saveHist(d,r.text);
+    st.textContent=r.truncated?"內容過長被截斷，可改短一點重新生成。":"完成。右側分數是針對所選平台貼文的自動檢查，點上方 FB／IG／Threads 切換。";
+  }catch(e){
+    if(e&&e.text){renderOutput(e.text,{final:true})}
+    st.className=e&&e.code==="cancelled"?"status":"status err";
+    st.textContent=e&&e.code==="cancelled"?"已停止。":errMsg(e);
+  }finally{$("#g-go").disabled=false;$("#g-stop").hidden=true}
+});
+$("#g-stop").onclick=()=>genCtl&&genCtl.abort();
+$("#g-clear").onclick=()=>{["f-topic","f-kw","f-long","f-aud","f-who","f-facts","f-cta","f-link"].forEach(id=>$("#"+id).value="");$("#ex-tag").hidden=true;$("#f-topic").focus()};
+["f-topic","f-kw","f-long","f-facts"].forEach(id=>$("#"+id).addEventListener("input",()=>$("#ex-tag").hidden=true));
+
+/* ---------- 健檢與改寫 ---------- */
+const hA=t=>analyze(t,$("#h-kw").value,$("#h-long").value.split("\n"),$("#h-ind").value,$("#h-plat").value);
+function runChk(){renderScores($("#h-scores"),hA($("#h-text").value))}
+["h-text","h-kw","h-long","h-ind","h-plat"].forEach(id=>$("#"+id).addEventListener("input",runChk));
+let hCtl=null;
+$("#h-go").onclick=async()=>{
+  const st=$("#h-status");const txt=$("#h-text").value.trim();
+  if(!txt){st.className="status err";st.textContent="請先貼上貼文內容。";return}
+  const sample=await getSample();
+  if(!sample){st.className="status err";st.textContent="目前的檢視環境無法呼叫 Claude，請在 claude.ai 開啟此頁。";return}
+  const hp=$("#h-plat").value,a=hA(txt);
+  const fails=[...a.seo,...a.geo].filter(c=>!c.ok).map(c=>"- "+c.label+"："+c.tip).join("\n")||"- 無";
+  const p=`${RULES}
+
+平台規則：
+- ${PRULES[hp]}
+
+產業與法規：${IND[$("#h-ind").value]}
+核心關鍵字：${$("#h-kw").value}
+長尾關鍵字：${$("#h-long").value}
+目前分數：SEO ${a.seoS}、GEO ${a.geoS}
+未通過的項目：
+${fails}
+${a.risks.length?"可能違規的用詞："+a.risks.join("、"):""}
+
+【原貼文】
+${txt}
+
+請保留原貼文的事實、品牌語氣與重點，改寫成能通過上述檢查的版本。依序輸出：
+## 2. ${PLAT[hp].title}
+改寫後可直接貼上 ${PLAT[hp].name} 的完整內容（純文字＋emoji，不用 Markdown 粗體）${hp==="th"?"，每則以【1/N】開頭":""}。
+## 改了什麼
+條列 3–6 點，說明每個修改對應哪個檢查項目；原文沒有的數據一律標〔待補〕。`;
+  hCtl=new AbortController();$("#h-go").disabled=true;$("#h-stop").hidden=false;st.className="status";st.textContent="改寫中…";
+  const draw=t=>{const secs=parseSections(t);$("#h-out").innerHTML=secs.map((s,i)=>`<article class="sec${i===0?" key":""}"><div class="sechead"><h3>${esc((s.title||"").replace(/^2\.\s*/,"")||"說明")}</h3><button class="btn sm" type="button" data-i="${i}">複製</button></div><div class="md">${md(s.body)}</div></article>`).join("");
+    $("#h-out").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>copy(plain(secs[+b.dataset.i].body).trim(),st))};
+  try{
+    const r=await sample(p,{signal:hCtl.signal,cache:false,onText:({text})=>draw(text)});
+    draw(r.text);const np=postOf(r.text,hp)||postOf(r.text);
+    if(np){const b=hA(np);
+      st.textContent=`完成。改寫版 SEO ${b.seoS}、GEO ${b.geoS}（原本 ${a.seoS}、${a.geoS}）。`;
+      const use=document.createElement("button");use.className="btn sm";use.type="button";use.textContent="把改寫版放回左邊重新打分";
+      use.onclick=()=>{$("#h-text").value=np;runChk();st.textContent="已換成改寫版。"};$("#h-out").prepend(use)}
+    else st.textContent="完成。";
+  }catch(e){st.className=e&&e.code==="cancelled"?"status":"status err";st.textContent=e&&e.code==="cancelled"?"已停止。":errMsg(e)}
+  finally{$("#h-go").disabled=false;$("#h-stop").hidden=true}
+};
+$("#h-stop").onclick=()=>hCtl&&hCtl.abort();
+
+/* ---------- 紀錄 ---------- */
+function saveHist(d,text){const h=store.get("hist",[]);h.unshift({ts:Date.now(),d,text});store.set("hist",h.slice(0,12))}
+function renderHist(){
+  const h=store.get("hist",[]);const el=$("#his-list");
+  if(!h.length){el.innerHTML='<div class="empty">還沒有生成紀錄。到「生成貼文」填好簡報單、按「用 Claude 生成」就會出現在這裡。</div>';return}
+  el.innerHTML=h.map((x,i)=>`<button type="button" data-i="${i}"><b>${esc(x.d.topic)}</b><small>${esc(x.d.kw)}・${esc(x.d.plat==="all"?"三平台":(PLAT[x.d.plat]||PLAT.fb).short)}・${esc(x.d.type)}・${new Date(x.ts).toLocaleString("zh-TW",{hour12:false})}</small></button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{const x=h[+b.dataset.i];
+    Object.entries({plat:"f-plat",topic:"f-topic",kw:"f-kw",long:"f-long",aud:"f-aud",who:"f-who",facts:"f-facts",type:"f-type",tone:"f-tone",len:"f-len",cta:"f-cta",ind:"f-ind",link:"f-link"}).forEach(([k,id])=>{if(x.d[k]!=null)$("#"+id).value=x.d[k]});
+    $("#ex-tag").hidden=true;$("#out-tag").hidden=true;renderOutput(x.text,{final:true});show("gen")});
+}
+
+/* ---------- 範例 ---------- */
+const EXAMPLE=`## 1. 搜尋意圖與關鍵字地圖
+| 關鍵字或問句 | 搜尋意圖 | 放在貼文哪裡 |
+|---|---|---|
+| 敏感肌防曬 | 知識 | 第一行、Hashtag |
+| 物理性防曬 化學性防曬 差別 | 比較 | 步驟 ① |
+| 防曬 SPF 越高越好嗎 | 知識 | 步驟 ② |
+| 防曬 要擦多少 | 知識 | 步驟 ③ |
+| 敏感肌 可以每天擦防曬嗎 | 知識 | Q&A |
+
+這篇主要回答：敏感肌夏天該怎麼挑防曬。
+
+## 2. FB 貼文主文
+敏感肌防曬怎麼選？答案是：先選物理性防曬，再看 SPF30–50、PA+++，最後做耳後測試。
+
+我是教保養 10 年的品牌講師，每到夏天最常被問這題，整理成 3 個步驟👇
+
+① 先看防曬類型
+物理性防曬以氧化鋅、二氧化鈦為主，停在皮膚表面反射紫外線，刺激感通常較低；化學性防曬靠吸收紫外線，部分成分較容易讓敏感肌不適。
+
+② 係數不是越高越好
+根據常見皮膚科衛教資料，SPF30 約阻擋 97% UVB，SPF50 約 98%，差距只有 1%。通勤族選 SPF30–50、PA+++ 就夠。
+
+③ 擦夠量、記得補
+防曬係數是用每平方公分 2 毫克測出來的（ISO 24444 國際標準），擦太少防護力會打折；流汗或擦汗後每 2–3 小時補擦。
+
+Q：敏感肌可以每天擦防曬嗎？
+A：可以。選無香料、無酒精的配方，晚上用溫和潔面洗乾淨即可。
+
+你的防曬最常遇到泛紅還是悶痘？留言分享膚況，下一篇幫你挑🌿
+
+#敏感肌防曬 #防曬怎麼選 #物理性防曬 #保養知識
+
+## 2. IG 圖說
+敏感肌防曬怎麼選？先選物理性防曬，再看 SPF30–50、PA+++ 👇
+
+教保養 10 年，夏天被問最多的就是這題，滑到最後一張有懶人包。
+
+✅ 類型：物理性（氧化鋅、二氧化鈦）刺激感通常較低
+✅ 係數：根據常見皮膚科衛教資料，SPF30 約擋 97% UVB、SPF50 約 98%
+✅ 用量：係數是以每平方公分 2 毫克測得（ISO 24444），擦太少會打折
+✅ 補擦：流汗後每 2–3 小時補一次
+
+Q：敏感肌可以天天擦防曬嗎？
+A：可以，選無香料、無酒精配方，晚上溫和洗淨即可。
+
+先收藏，買防曬前對照一下。你是泛紅肌還是痘痘肌？留言告訴我 💬
+2026 年整理｜完整挑選表在個人檔案連結
+
+#敏感肌防曬 #防曬怎麼選 #物理性防曬 #保養知識
+
+## 2. Threads 串文
+【1/4】
+敏感肌防曬怎麼選？答案是：物理性防曬、SPF30–50、PA+++，再加耳後測試。我教保養 10 年，拆成 3 則講清楚 🧵
+
+【2/4】
+物理性防曬以氧化鋅、二氧化鈦為主，停在皮膚表面反射紫外線，刺激感通常比化學性防曬低。
+
+【3/4】
+SPF 不是越高越好。根據常見皮膚科衛教資料，SPF30 約擋 97% UVB，SPF50 約 98%，只差 1%。擦夠量比較重要：係數是用每平方公分 2 毫克測的（ISO 24444）。
+
+【4/4】
+流汗後每 2–3 小時補擦。你的防曬最常遇到泛紅還是悶痘？回覆我，下一串幫你挑。2026 年整理
+#敏感肌防曬
+
+## 3. 替代開頭
+- 敏感肌防曬擦了還是泛紅？問題可能出在「防曬類型」。
+- SPF50 只比 SPF30 多擋 1%，敏感肌防曬真正要看的是這 3 件事。
+- 敏感肌防曬不是越溫和越好，擦不夠量才是最常見的錯。
+
+## 4. AI 可引用段落
+敏感肌防曬建議優先選擇物理性防曬，也就是以氧化鋅或二氧化鈦為主要成分的產品。物理性防曬停留在皮膚表面反射紫外線，刺激感通常比吸收型的化學性防曬低。
+
+SPF 數值越高，阻擋 UVB 的比例只小幅增加：SPF30 約 97%，SPF50 約 98%。對日常通勤的敏感肌來說，SPF30–50、PA+++ 已足夠，擦足用量與定時補擦比追求高係數更重要。
+
+## 5. FAQ
+Q：敏感肌適合物理性還是化學性防曬？
+A：多數敏感肌較適合物理性防曬，以氧化鋅、二氧化鈦為主，刺激感通常較低。第一次使用仍建議先在耳後測試 24 小時。
+
+Q：防曬要擦多少才夠？
+A：防曬係數以每平方公分 2 毫克測得，臉部約需〔待補：以毫升或硬幣大小表示的臉部用量〕。擦太少，實際防護力會明顯低於標示。
+
+## 6. 置頂留言與連結安排
+- FB 置頂留言：補充耳後測試的方法，取少量塗在耳後，24 小時沒有泛紅、發癢再上臉。你最想知道哪種膚質的防曬挑法？留言告訴我。
+- IG：第一則留言放耳後測試方法；個人檔案連結文字「敏感肌防曬挑選表」。
+- Threads：不放連結，有人回覆時再補充耳後測試方法。
+
+## 7. 圖卡文字與替代文字
+- 第 1 張：敏感肌防曬 3 步驟／類型、係數、用量一次看懂
+- 第 2 張：物理性 vs 化學性／氧化鋅、二氧化鈦刺激感通常較低
+- 第 3 張：SPF 不是越高越好／SPF30 約 97%、SPF50 約 98%
+- 第 4 張：擦夠量才算數／每平方公分 2 毫克、流汗後 2–3 小時補擦
+- 第 5 張：懶人包／收藏起來，買防曬前對照
+- 替代文字：敏感肌防曬挑選三步驟圖解，比較物理性與化學性防曬
+
+## 8. 優化說明與待補資料
+- 第一行同時放核心關鍵字與答案，符合 FB 搜尋與 AI 答案先行。
+- 數字都附出處（皮膚科衛教資料、ISO 24444）。
+- 〔待補〕臉部建議用量請用品牌教材中的說法補上。
+- 法規：未使用治療、修復、醫師推薦等字眼；「刺激感較低」屬一般描述，仍建議送合規複查。`;
+renderOutput(EXAMPLE,{final:true});
+$("#h-text").value=postOf(EXAMPLE,"fb");runChk();
+
+/* ---------- 分頁網址（#gen #chk #his #how，PWA 捷徑也用這個） ---------- */
+const fromHash=()=>{const v=location.hash.slice(1);if(["gen","chk","his","how"].includes(v))show(v)};
+addEventListener("hashchange",fromHash);fromHash();
+
+/* ---------- 網站版（PWA）：在 claude.ai 之外開啟時才啟用 ---------- */
+if(!window.claude){
+  $("#pwa-note").hidden=false;
+  if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register("sw.js").catch(()=>{});
+  const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+  if(!standalone&&/iPhone|iPad|iPod/.test(navigator.userAgent))$("#pwa-ios").hidden=false;
+  let deferred=null;
+  addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;$("#pwa-install").hidden=false});
+  $("#pwa-install").onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice.catch(()=>null);deferred=null;$("#pwa-install").hidden=true};
+  addEventListener("appinstalled",()=>{$("#pwa-install").hidden=true});
+}
+</script>
+
+</body>
+</html>
