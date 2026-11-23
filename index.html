@@ -462,6 +462,8 @@ function analyze(text,kw,longs,ind,plat){
   const tags=t.match(/#[^\s#，。！？,]+/g)||[];
   const sentences=t.split(/[。！？!?\n]/).map(s=>s.trim()).filter(Boolean);
   const first2=sentences.slice(0,2).join("");
+  // 第一句（保留問號；Threads 先去掉【1/5】序號，避免序號的數字被算成鉤子）
+  const firstSent=(t.replace(/^【\s*\d+\s*\/\s*\d+\s*】\s*/,"").match(/^[^。！!\n？?]*[？?]?/)||[""])[0];
   const nums=(body.match(/\d+(?:\.\d+)?/g)||[]).length;
   const qa=(t.match(/(^|\n)\s*(Q\d*\s*[:：]|問\s*[:：]|Q\d*\s)/g)||[]).length;
   const qs=(t.match(/[？?]/g)||[]).length;
@@ -474,7 +476,7 @@ function analyze(text,kw,longs,ind,plat){
   const seo=[
     C(kw&&head.includes(kw),18,`核心關鍵字出現在開頭 ${P.head} 字內`,kw?"把「"+kw+"」放進第一句，最好就是標題句。":"先填核心關鍵字才能判斷。"),
     C(kwN>=2&&kwN<=6,12,`核心關鍵字出現 2–6 次（目前 ${kwN} 次）`,kwN<2?"在小標、Q&A 或結尾再自然帶到 1–2 次。":"出現太多次會像在塞關鍵字，改用同義詞。"),
-    C(/[？?]|\d/.test(sentences[0]||""),10,"第一句是問句或含數字（鉤子）","用讀者會搜尋的問句開頭，或給一個具體數字。"),
+    C(/[？?]|\d/.test(firstSent),10,"第一句是問句或含數字（鉤子）","用讀者會搜尋的問句開頭，或給一個具體數字。"),
     plat==="th"
       ?C(maxSeg<=500&&len>=P.min,10,`每則 500 字元內（最長 ${maxSeg}，共 ${segs.length} 則）`,maxSeg>500?"超過 500 字元的那則拆成兩則，用【1/4】標序號。":"內容太少，補一則做法或 Q&A。")
       :C(len>=P.min&&len<=P.max,10,`字數 ${P.min}–${P.max}（目前 ${len} 字）`,len<P.min?"太短不容易被當成答案來源，補一段做法或 Q&A。":"太長會被滑走，拆成系列貼文。"),
@@ -602,7 +604,7 @@ async function copy(t,st){
 }
 $("#o-copy-post").onclick=()=>copy(postOf(current,curPlat),$("#g-status"));
 $("#o-copy-all").onclick=()=>copy(plain(current),$("#g-status"));
-$("#o-to-chk").onclick=()=>{hIsExample=false;$("#h-text").value=postOf(current,curPlat);$("#h-plat").value=curPlat;$("#h-kw").value=$("#f-kw").value;$("#h-long").value=$("#f-long").value;$("#h-ind").value=$("#f-ind").value;runChk();show("chk")};
+$("#o-to-chk").onclick=()=>{hIsExample=false;$("#h-text").value=postOf(current,curPlat);$("#h-plat").value=curPlat;$("#h-kw").value=$("#f-kw").value;$("#h-long").value=$("#f-long").value;$("#h-ind").value=$("#f-ind").value;runChk();show("chk");$(".bar").scrollIntoView({block:"start"})};
 
 /* ---------- Claude ---------- */
 let sampleP=null;
@@ -728,7 +730,7 @@ ${$("#f-must").value.trim()?"必須提到："+$("#f-must").value.trim():""}
 【原貼文】
 ${txt}
 
-請保留原貼文的事實、品牌語氣與重點，改寫成能通過上述檢查的版本。依序輸出：
+請保留原貼文的事實、品牌語氣與重點，改寫成能通過上述檢查的版本。原本已通過的項目不能退步：保留原文所有數字與出處、Q／A、條列、發文者身分與時間標記。依序輸出：
 ## 2. ${PLAT[hp].title}
 改寫後可直接貼上 ${PLAT[hp].name} 的完整內容（純文字＋emoji，不用 Markdown 粗體）${hp==="th"?"，每則以【1/N】開頭":""}。
 ## 改了什麼
@@ -740,7 +742,9 @@ ${txt}
     const r=await sample(p,{signal:hCtl.signal,cache:false,onText:({text})=>draw(text)});
     draw(r.text);const np=postOf(r.text,hp)||postOf(r.text);
     if(np){const b=hA(np);
-      st.textContent=`完成。改寫版 SEO ${b.seoS}、GEO ${b.geoS}（原本 ${a.seoS}、${a.geoS}）。`;
+      const worse=b.seoS+b.geoS<a.seoS+a.geoS;
+      st.className=worse?"status err":"status";
+      st.textContent=`完成。改寫版 SEO ${b.seoS}、GEO ${b.geoS}（原本 ${a.seoS}、${a.geoS}）。`+(worse?"改寫版總分較低，建議保留原文，或再改寫一次。":"");
       const use=document.createElement("button");use.className="btn sm";use.type="button";use.textContent="把改寫版放回左邊重新打分";
       use.onclick=()=>{$("#h-text").value=np;runChk();st.textContent="已換成改寫版。"};$("#h-out").prepend(use)}
     else st.textContent="完成。";
