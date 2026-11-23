@@ -53,6 +53,11 @@ h1,h2,h3,h4{text-wrap:balance;margin:0;line-height:1.3}
 .hero p{margin:0;color:#B8C8CD;font-size:clamp(.9rem,1.25vw,1.02rem);max-width:40ch}
 .stamps{display:flex;flex-wrap:wrap;gap:8px}
 .stamp{font-family:var(--font-num);font-size:.76rem;font-weight:700;letter-spacing:.06em;padding:4px 12px;border-radius:999px;border:1px solid rgba(63,216,234,.45);color:var(--ink);background:rgba(63,216,234,.08);box-shadow:0 0 14px rgba(63,216,234,.15)}
+button.stamp{cursor:pointer;font-family:var(--font-num);transition:background .15s,box-shadow .15s,color .15s}
+button.stamp:hover{background:rgba(63,216,234,.18)}
+button.stamp[aria-pressed="true"]{background:linear-gradient(180deg,#62E7F5,var(--accent2));color:var(--accent-ink);border-color:transparent;box-shadow:0 0 0 1px rgba(63,216,234,.5),0 0 22px rgba(63,216,234,.4)}
+.wshint{font-size:.8rem;color:var(--muted)}
+.wslabel{font-family:var(--font-num);font-size:.72rem;font-weight:700;letter-spacing:.08em;padding:1px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
 .stamp.amb{border-color:rgba(242,165,74,.5);background:rgba(242,165,74,.08);box-shadow:0 0 14px rgba(242,165,74,.12)}
 @media (max-width:760px){
   .hero{flex-direction:column;align-items:stretch;min-height:0}
@@ -172,7 +177,13 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
     <span class="kicker">SEO × GEO STUDIO</span>
     <h1>社群搜尋<em>引用</em>文案台</h1>
     <p>輸入主題與關鍵字，一次產出三個平台的寫法：站內搜尋找得到，Google 與 AI 引擎願意引用。現有貼文也能貼進來健檢打分。</p>
-    <div class="stamps"><span class="stamp">Facebook</span><span class="stamp">Instagram</span><span class="stamp">Threads</span><span class="stamp amb">AI 引用分數</span></div>
+    <div class="stamps" role="group" aria-label="切換平台工作區">
+      <button type="button" class="stamp ws" data-ws="fb" aria-pressed="false">Facebook</button>
+      <button type="button" class="stamp ws" data-ws="ig" aria-pressed="false">Instagram</button>
+      <button type="button" class="stamp ws" data-ws="th" aria-pressed="false">Threads</button>
+      <span class="stamp amb">AI 引用分數</span>
+    </div>
+    <span class="wshint" id="ws-hint">點選平台，整頁切換成該平台的工作區</span>
   </div>
 </header>
 <div class="pwa-note" id="pwa-note" hidden>
@@ -192,7 +203,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 <!-- 生成 -->
 <section id="v-gen" class="grid">
   <form id="gen-form" class="panel" autocomplete="off">
-    <div><span class="eyebrow">簡報單</span> <span class="tag" id="ex-tag">已填入範例</span></div>
+    <div><span class="eyebrow">簡報單</span> <span class="wslabel ws-label"></span> <span class="tag" id="ex-tag">已填入範例</span></div>
     <div class="field"><label for="f-topic">主題或產品<span class="req">*</span></label>
       <input type="text" id="f-topic" value="敏感肌夏季防曬怎麼選"></div>
     <div class="field"><label for="f-plat">發文平台</label>
@@ -268,7 +279,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 <!-- 健檢 -->
 <section id="v-chk" class="grid" hidden>
   <div class="panel">
-    <div><span class="eyebrow">貼上現有貼文</span></div>
+    <div><span class="eyebrow">貼上現有貼文</span> <span class="wslabel ws-label"></span></div>
     <div class="row2">
       <div class="field"><label for="h-plat">平台</label>
         <select id="h-plat"><option value="fb">Facebook</option><option value="ig">Instagram</option><option value="th">Threads</option></select></div>
@@ -307,9 +318,9 @@ SPF</textarea></div>
   <h2>這個工具怎麼判斷「會被找到、會被引用」</h2>
   <div class="grouplabel">三個平台的差異</div>
   <div class="guide">
-    <div><b>Facebook</b>「查看更多」前約 70 字；Hashtag 2–5 個；正文不放連結，改放置頂留言；適合 500–800 字的完整教學。</div>
-    <div><b>Instagram</b>圖說「更多」前約 125 字元、上限 2,200 字元；Hashtag 3–5 個；圖說連結不能點，寫「連結在個人檔案」；關鍵字也要放進輪播圖文字與替代文字。</div>
-    <div><b>Threads</b>每則上限 500 字元、只能加 1 個主題標籤；用【1/4】串文拆重點，第一則就給答案；可放 1 個連結，建議放最後一則。</div>
+    <div data-pguide="fb"><b>Facebook</b>「查看更多」前約 70 字；Hashtag 2–5 個；正文不放連結，改放置頂留言；適合 500–800 字的完整教學。</div>
+    <div data-pguide="ig"><b>Instagram</b>圖說「更多」前約 125 字元、上限 2,200 字元；Hashtag 3–5 個；圖說連結不能點，寫「連結在個人檔案」；關鍵字也要放進輪播圖文字與替代文字。</div>
+    <div data-pguide="th"><b>Threads</b>每則上限 500 字元、只能加 1 個主題標籤；用【1/4】串文拆重點，第一則就給答案；可放 1 個連結，建議放最後一則。</div>
   </div>
   <div class="grouplabel">SEO：讓站內搜尋與 Google 找得到</div>
   <div class="guide">
@@ -493,7 +504,7 @@ function renderPreview(post,cite,plat){
   $("#pv-cite").textContent=cite||"生成後顯示最可能被摘錄的段落。";
   const who=$("#f-who").value.trim();$("#pv-av").textContent=(who||"你")[0];
 }
-let current="",curPlat="fb";
+let current="",curPlat="fb",ws=(["all","fb","ig","th"].includes(store.get("ws","all"))?store.get("ws","all"):"all");
 function drawPlat(){
   const post=postOf(current,curPlat);
   renderPreview(post,citeOf(current),curPlat);
@@ -502,8 +513,12 @@ function drawPlat(){
 }
 function renderOutput(text,{final=false}={}){
   current=text;
-  const secs=parseSections(text);
-  const ps=platsIn(text);if(ps.length&&!ps.includes(curPlat))curPlat=ps[0];
+  let ps=platsIn(text);
+  const focus=ws!=="all"&&ps.includes(ws);
+  if(focus){ps=[ws];curPlat=ws}
+  const otherRe=focus?new RegExp(Object.keys(PLAT).filter(k=>k!==ws).map(k=>PLAT[k].sec.source).join("|")):null;
+  const secs=parseSections(text).filter(s=>!otherRe||!otherRe.test(s.title));
+  if(ps.length&&!ps.includes(curPlat))curPlat=ps[0];
   $("#pv-plats").innerHTML=ps.map(k=>`<button type="button" role="tab" aria-selected="${k===curPlat}" data-p="${k}">${PLAT[k].short}</button>`).join("");
   $("#pv-plats").querySelectorAll("button").forEach(b=>b.onclick=()=>{curPlat=b.dataset.p;$("#pv-plats").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",String(x===b)));drawPlat()});
   $("#o-sections").innerHTML=secs.length?secs.map((s,i)=>`<article class="sec${/貼文主文|IG 圖說|Threads 串文|可引用/.test(s.title)?" key":""}"><div class="sechead"><h3>${esc(s.title||"說明")}</h3><button class="btn sm" type="button" data-copy="${i}">複製</button></div><div class="md">${md(s.body)}</div></article>`).join(""):'<div class="empty">尚未產生內容。</div>';
@@ -517,7 +532,7 @@ async function copy(t,st){
 }
 $("#o-copy-post").onclick=()=>copy(postOf(current,curPlat),$("#g-status"));
 $("#o-copy-all").onclick=()=>copy(plain(current),$("#g-status"));
-$("#o-to-chk").onclick=()=>{$("#h-text").value=postOf(current,curPlat);$("#h-plat").value=curPlat;$("#h-kw").value=$("#f-kw").value;$("#h-long").value=$("#f-long").value;$("#h-ind").value=$("#f-ind").value;runChk();show("chk")};
+$("#o-to-chk").onclick=()=>{hIsExample=false;$("#h-text").value=postOf(current,curPlat);$("#h-plat").value=curPlat;$("#h-kw").value=$("#f-kw").value;$("#h-long").value=$("#f-long").value;$("#h-ind").value=$("#f-ind").value;runChk();show("chk")};
 
 /* ---------- Claude ---------- */
 let sampleP=null;
@@ -666,7 +681,7 @@ function renderHist(){
   el.innerHTML=h.map((x,i)=>`<button type="button" data-i="${i}"><b>${esc(x.d.topic)}</b><small>${esc(x.d.kw)}・${esc(x.d.plat==="all"?"三平台":(PLAT[x.d.plat]||PLAT.fb).short)}・${esc(x.d.type)}・${new Date(x.ts).toLocaleString("zh-TW",{hour12:false})}</small></button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>{const x=h[+b.dataset.i];
     Object.entries({plat:"f-plat",topic:"f-topic",kw:"f-kw",long:"f-long",aud:"f-aud",who:"f-who",facts:"f-facts",type:"f-type",tone:"f-tone",len:"f-len",cta:"f-cta",ind:"f-ind",link:"f-link"}).forEach(([k,id])=>{if(x.d[k]!=null)$("#"+id).value=x.d[k]});
-    $("#ex-tag").hidden=true;$("#out-tag").hidden=true;renderOutput(x.text,{final:true});show("gen")});
+    $("#ex-tag").hidden=true;$("#out-tag").hidden=true;current=x.text;ws=x.d.plat||"all";applyWS();show("gen")});
 }
 
 /* ---------- 範例 ---------- */
@@ -770,7 +785,26 @@ A：防曬係數以每平方公分 2 毫克測得，臉部約需〔待補：以�
 - 〔待補〕臉部建議用量請用品牌教材中的說法補上。
 - 法規：未使用治療、修復、醫師推薦等字眼；「刺激感較低」屬一般描述，仍建議送合規複查。`;
 renderOutput(EXAMPLE,{final:true});
-$("#h-text").value=postOf(EXAMPLE,"fb");runChk();
+/* ---------- 平台工作區：點主視覺的平台方塊，整頁切成該平台 ---------- */
+let hIsExample=true;
+$("#h-text").addEventListener("input",()=>{hIsExample=false});
+function applyWS(){
+  const one=ws!=="all";
+  document.querySelectorAll("button.ws").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.ws===ws)));
+  document.querySelectorAll(".ws-label").forEach(el=>{el.textContent=one?PLAT[ws].name+" 工作區":"三平台";});
+  $("#ws-hint").textContent=one?`目前是 ${PLAT[ws].name} 工作區，再點一次回到三平台`:"點選平台，整頁切換成該平台的工作區";
+  $("#f-plat").value=ws;
+  const hp=one?ws:(curPlat||"fb");$("#h-plat").value=hp;
+  if(hIsExample)$("#h-text").value=postOf(EXAMPLE,hp);
+  document.querySelectorAll("[data-pguide]").forEach(d=>d.hidden=one&&d.dataset.pguide!==ws);
+  if(one)curPlat=ws;
+  renderOutput(current,{final:true});runChk();
+  store.set("ws",ws);
+}
+document.querySelectorAll("button.ws").forEach(b=>b.onclick=()=>{ws=ws===b.dataset.ws?"all":b.dataset.ws;applyWS()});
+$("#f-plat").addEventListener("change",()=>{ws=$("#f-plat").value;applyWS()});
+$("#h-plat").addEventListener("change",()=>{if(ws!=="all"&&$("#h-plat").value!==ws){ws=$("#h-plat").value;applyWS()}else if(hIsExample){$("#h-text").value=postOf(EXAMPLE,$("#h-plat").value);runChk()}});
+applyWS();
 
 /* ---------- 分頁網址（#gen #chk #his #how，PWA 捷徑也用這個） ---------- */
 const fromHash=()=>{const v=location.hash.slice(1);if(["gen","chk","his","how"].includes(v))show(v)};
