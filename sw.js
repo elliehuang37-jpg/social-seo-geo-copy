@@ -1,8 +1,8 @@
-/* 社群搜尋引用文案台：離線快取
+/* SEO／GEO 文案生成器：離線快取
    - 網頁本體：先連網拿最新版，離線時用快取
    - 圖片、圖示：先用快取
    - Google 字型：用過一次就快取，之後離線可用 */
-const VERSION = "202611230102";
+const VERSION = "202611230118";
 const SHELL = "sg-shell-" + VERSION;
 const RUNTIME = "sg-runtime-v1";
 const PRECACHE = [

@@ -3,97 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0A1013">
+<meta name="theme-color" content="#F3EEE6">
 <meta name="description" content="FB、IG、Threads 的 SEO／GEO 文案生成與健檢：站內搜尋找得到、Google 與 AI 引擎願意引用">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="搜尋引用文案">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#0A1013}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SEO GEO 文案">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#F3EEE6}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>社群搜尋引用文案台</title>
+<title>SEO／GEO 文案生成器</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap">
 <style>
-/* 版面：攝影棚夜景——主視覺是三個發光螢幕（素材圖右側），文字放在左側暗場；下方是「簡報單」表單與結果區，手機改為上下堆疊。
-   刻意只做深色：這套視覺來自打光的攝影棚，不另做淺色版。 */
+/* 版面：午後工作室——米白亞麻底、森林綠襯線大標與金色筆觸；主視覺左側是標題與三張平台小卡（可點選切換工作區），右側是行銷人人像；
+   下方是「簡報單」表單與結果區，手機改為上下堆疊。刻意只做淺色，對應素材圖的自然光。 */
 :root{
-  --bg:#0A1013; --bg2:#0F181C; --surface:#121C21; --surface2:#17242A; --sunk:#0C1418; --ink:#E7F0F2; --muted:#8EA2A9; --line:#22343B;
-  --accent:#3FD8EA; --accent2:#22B6CC; --accent-ink:#03161A; --accent-soft:#0D2F36; --glow:rgba(63,216,234,.28);
-  --amber:#F2A54A; --fb:#8DB6FF;
-  --good:#52D38F; --warn:#F2B55C; --bad:#FF7B6F; --good-soft:#10301F; --warn-soft:#33260F; --bad-soft:#3A1714;
+  --bg:#F3EEE6; --surface:#FCFAF6; --surface2:#F8F4EC; --sunk:#F1EBE1; --ink:#1E2722; --muted:#686A61; --line:#E3DACB;
+  --accent:#1F4D36; --accent2:#2E6A4B; --accent-ink:#FFFFFF; --accent-soft:#E4ECE3;
+  --gold:#A3732C; --gold2:#C99A52; --gold-soft:#F6EBD8; --fb:#2F5FB8;
+  --good:#2B7A4B; --warn:#94590C; --bad:#B23A2E; --good-soft:#E2F0E6; --warn-soft:#F8EBD3; --bad-soft:#F8E2DE;
   --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-  --font-num:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
-  --r:12px;
-  color-scheme:dark;
+  --font-display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --r:14px;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);background-image:radial-gradient(1200px 500px at 0% -10%,rgba(242,165,74,.07),transparent 60%),radial-gradient(900px 600px at 100% 0%,rgba(63,216,234,.06),transparent 60%);background-attachment:fixed;
+body{background:var(--bg);background-image:radial-gradient(900px 500px at 100% 0%,rgba(255,248,232,.9),transparent 60%),radial-gradient(700px 500px at 0% 100%,rgba(209,224,205,.35),transparent 60%);background-attachment:fixed;
   color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.7;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
-a{color:var(--accent)}
+a{color:var(--accent2)}
 .wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 h1,h2,h3,h4{text-wrap:balance;margin:0;line-height:1.3}
 
 /* 主視覺 */
-.hero{position:relative;border-radius:18px;overflow:hidden;background:var(--bg2);border:1px solid var(--line);min-height:clamp(300px,36vw,430px);display:flex;align-items:center}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 260px at 8% 0%,rgba(242,165,74,.16),transparent 70%);pointer-events:none}
-.hero-img{position:absolute;top:0;right:0;bottom:0;width:min(60%,620px);background:url("hero.webp") center 40%/cover no-repeat;animation:heroIn 1.4s ease-out both}
-.hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg2) 0%,rgba(15,24,28,.75) 18%,rgba(15,24,28,0) 50%),linear-gradient(0deg,rgba(15,24,28,.6),transparent 30%)}
-@keyframes heroIn{from{transform:scale(1.04);opacity:.6}to{transform:none;opacity:1}}
-.hero-copy{position:relative;z-index:1;max-width:min(54%,600px);padding:clamp(22px,4vw,48px);display:flex;flex-direction:column;gap:14px;align-items:flex-start}
-.kicker{font-family:var(--font-num);font-size:.74rem;letter-spacing:.22em;color:var(--accent);font-weight:700}
-.hero h1{font-size:clamp(1.9rem,3.6vw,2.9rem);font-weight:900;letter-spacing:.02em;text-shadow:0 0 28px rgba(63,216,234,.22)}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p{margin:0;color:#B8C8CD;font-size:clamp(.9rem,1.25vw,1.02rem);max-width:40ch}
-.stamps{display:flex;flex-wrap:wrap;gap:8px}
-.stamp{font-family:var(--font-num);font-size:.76rem;font-weight:700;letter-spacing:.06em;padding:4px 12px;border-radius:999px;border:1px solid rgba(63,216,234,.45);color:var(--ink);background:rgba(63,216,234,.08);box-shadow:0 0 14px rgba(63,216,234,.15)}
-button.stamp{cursor:pointer;font-family:var(--font-num);transition:background .15s,box-shadow .15s,color .15s}
-button.stamp:hover{background:rgba(63,216,234,.18)}
-button.stamp[aria-pressed="true"]{background:linear-gradient(180deg,#62E7F5,var(--accent2));color:var(--accent-ink);border-color:transparent;box-shadow:0 0 0 1px rgba(63,216,234,.5),0 0 22px rgba(63,216,234,.4)}
+.hero{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(110deg,#FBF7F0 0%,#F4EEE4 60%,#EEE6D9 100%);border:1px solid var(--line);display:flex;align-items:stretch;min-height:clamp(380px,40vw,500px);box-shadow:0 20px 50px rgba(60,48,30,.08)}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,252,244,.55) 42%,transparent 54%),linear-gradient(115deg,transparent 48%,rgba(255,252,244,.35) 58%,transparent 66%);pointer-events:none}
+.hero-img{position:absolute;top:0;right:0;bottom:0;width:min(40%,470px);background:url("hero.webp") center 18%/cover no-repeat;animation:heroIn 1.4s ease-out both}
+.hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#F4EEE4 0%,rgba(244,238,228,.6) 16%,rgba(244,238,228,0) 40%)}
+@keyframes heroIn{from{transform:scale(1.03);opacity:.7}to{transform:none;opacity:1}}
+.hero-copy{position:relative;z-index:1;width:min(64%,760px);padding:clamp(22px,3.6vw,46px);display:flex;flex-direction:column;gap:14px;justify-content:center}
+.titleblock{border-left:3px solid var(--gold2);padding-left:clamp(14px,1.6vw,22px);display:flex;flex-direction:column;gap:6px}
+.kicker{font-size:.74rem;letter-spacing:.26em;color:var(--gold);font-weight:700}
+.hero h1{font-family:var(--font-display);font-size:clamp(1.9rem,3.7vw,3rem);font-weight:900;letter-spacing:.02em;color:var(--accent)}
+.hero .sub{margin:0;font-family:var(--font-display);font-size:clamp(1rem,1.6vw,1.3rem);letter-spacing:.08em;color:#3B3F38}
+.swoosh{width:150px;height:10px;margin:-2px 0 0 120px;border-bottom:2px solid var(--gold2);border-radius:0 0 50% 50%}
+.hero .lead{margin:0;color:var(--muted);font-size:.92rem;max-width:46ch}
+.pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:620px}
+.pcard{position:relative;text-align:left;border:1px solid rgba(255,255,255,.9);background:rgba(255,253,249,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:14px;padding:10px 12px 11px;cursor:pointer;font:inherit;color:var(--ink);box-shadow:0 8px 22px rgba(60,48,30,.10);transition:transform .15s,box-shadow .15s,border-color .15s;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pcard:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(60,48,30,.14)}
+.pcard .ph{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:.98rem}
+.pcard .ph svg{flex:none}
+.pcard small{font-size:.74rem;color:var(--muted);line-height:1.45}
+.pcard .ok{position:absolute;top:8px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;display:none;place-items:center}
+.pcard[aria-pressed="true"]{border-color:var(--accent2);background:#fff;box-shadow:0 0 0 2px rgba(46,106,75,.35),0 12px 28px rgba(31,77,54,.16)}
+.pcard[aria-pressed="true"] .ok{display:grid}
+.ribbon{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ribbon span.r{font-family:var(--font-display);font-size:.95rem;letter-spacing:.12em;color:#F8F3E8;background:var(--accent);padding:5px 18px;border-radius:4px 14px 4px 14px;box-shadow:0 6px 16px rgba(31,77,54,.25)}
 .wshint{font-size:.8rem;color:var(--muted)}
-.wslabel{font-family:var(--font-num);font-size:.72rem;font-weight:700;letter-spacing:.08em;padding:1px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
-.stamp.amb{border-color:rgba(242,165,74,.5);background:rgba(242,165,74,.08);box-shadow:0 0 14px rgba(242,165,74,.12)}
-@media (max-width:760px){
-  .hero{flex-direction:column;align-items:stretch;min-height:0}
-  .hero-img{position:relative;width:100%;max-width:100%;aspect-ratio:16/10;background-position:center 35%}
-  .hero-img::after{background:linear-gradient(0deg,var(--bg2) 0%,rgba(15,24,28,0) 45%)}
-  .hero-copy{max-width:none;margin-top:-56px;padding:0 18px 22px}
+.wslabel{font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:1px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+@media (max-width:860px){
+  .hero{flex-direction:column;min-height:0}
+  .hero-img{position:relative;width:100%;max-width:100%;aspect-ratio:4/3;background-position:center 22%}
+  .hero-img::after{background:linear-gradient(0deg,#F4EEE4 0%,rgba(244,238,228,0) 38%)}
+  .hero-copy{width:100%;margin-top:-30px;padding:0 18px 22px}
+  .swoosh{margin-left:80px}
 }
+@media (max-width:480px){.pcard small{display:none}.pcard{align-items:center;padding:10px 6px}.pcard .ph{flex-direction:column;gap:4px;font-size:.9rem}.pcard .ok{top:6px;right:6px}}
 
 .bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:999px;overflow-x:auto;max-width:100%}
-.tabs button{border:0;background:transparent;color:var(--muted);font:500 .92rem var(--font-body);padding:7px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.tabs button:hover{color:var(--ink)}
-.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(63,216,234,.45),0 0 16px rgba(63,216,234,.15)}
-.pwa-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:var(--r);padding:10px 14px;font-size:.86rem}
-.pwa-note p{margin:0;flex:1 1 320px;color:#C3D1D5}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tabs button{border:0;background:transparent;color:var(--muted);font:500 .92rem var(--font-body);padding:7px 18px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button:hover{color:var(--accent)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+.pwa-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--gold2);border-radius:var(--r);padding:10px 14px;font-size:.86rem}
+.pwa-note p{margin:0;flex:1 1 320px;color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
 
 .grid{display:grid;gap:18px;grid-template-columns:1fr}
-@media (min-width:980px){.grid{grid-template-columns:380px minmax(0,1fr)}}
-.panel{background:linear-gradient(180deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.panel h2{font-size:1.05rem}
-.eyebrow{font-family:var(--font-num);font-size:.72rem;letter-spacing:.16em;color:var(--accent);font-weight:700}
+@media (min-width:980px){.grid{grid-template-columns:390px minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:0 12px 30px rgba(60,48,30,.06)}
+.panel h2{font-family:var(--font-display);font-size:1.12rem;color:var(--accent)}
+.eyebrow{font-size:.72rem;letter-spacing:.2em;color:var(--gold);font-weight:700}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+legend{font-family:var(--font-display);font-weight:700;color:var(--accent);font-size:.95rem;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:8px;width:100%}
+legend::after{content:"";flex:1;border-top:1px solid var(--line)}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:.86rem;font-weight:700}
 .field small{color:var(--muted);font-size:.78rem;line-height:1.5}
 .req{color:var(--bad);margin-left:2px}
-input[type=text],select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent2)}
+input[type=text],select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(46,106,75,.14)}
 textarea{resize:vertical;min-height:70px;line-height:1.6}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:420px){.row2{grid-template-columns:1fr}}
 .btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.btn{border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:500 .9rem var(--font-body);padding:8px 14px;border-radius:8px;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--accent);font:500 .9rem var(--font-body);padding:8px 14px;border-radius:10px;cursor:pointer}
 .btn:hover{border-color:var(--accent2)}
-.btn.primary{background:linear-gradient(180deg,#62E7F5,var(--accent2));border-color:transparent;color:var(--accent-ink);font-weight:700;box-shadow:0 0 0 1px rgba(63,216,234,.4),0 6px 22px rgba(63,216,234,.25)}
-.btn.primary:hover{filter:brightness(1.08)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;box-shadow:0 8px 20px rgba(31,77,54,.25)}
+.btn.primary:hover{background:var(--accent2)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.sm{padding:4px 10px;font-size:.8rem}
 .status{font-size:.85rem;color:var(--muted);min-height:1.4em}
@@ -104,11 +116,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .top{display:grid;gap:16px;grid-template-columns:1fr}
 @media (min-width:760px){.top{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
 .pchips{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.pchips button{border:1px solid var(--line);background:var(--sunk);color:var(--muted);font:700 .8rem var(--font-num);padding:3px 12px;border-radius:999px;cursor:pointer}
-.pchips button[aria-selected="true"]{background:var(--accent-soft);border-color:rgba(63,216,234,.6);color:var(--accent);box-shadow:0 0 12px rgba(63,216,234,.2)}
-.fbpost{border:1px solid rgba(63,216,234,.35);border-radius:var(--r);background:var(--sunk);padding:14px 16px;min-width:0;box-shadow:0 0 0 1px rgba(63,216,234,.08),0 0 28px rgba(63,216,234,.10)}
+.pchips button{border:1px solid var(--line);background:var(--surface);color:var(--muted);font:700 .8rem var(--font-body);padding:3px 12px;border-radius:999px;cursor:pointer}
+.pchips button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.fbpost{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:14px 16px;min-width:0;box-shadow:0 10px 26px rgba(60,48,30,.08)}
 .fbhead{display:flex;gap:10px;align-items:center;margin-bottom:8px}
-.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:900;box-shadow:inset 0 0 0 1px rgba(63,216,234,.4)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--font-display);font-weight:900}
 .fbhead b{display:block;font-size:.9rem}
 .fbhead span{font-size:.75rem;color:var(--muted)}
 .fbtext{white-space:pre-wrap;font-size:.93rem;word-break:break-word}
@@ -117,73 +129,89 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .fbnote{font-size:.76rem;color:var(--muted);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
 .thpost{border-left:2px solid var(--line);padding:0 0 10px 12px;margin-left:4px}
 .thpost:last-child{padding-bottom:0}
-.thpost .len{display:block;font-family:var(--font-num);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.thpost .len{display:block;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .thpost .len.over{color:var(--bad)}
-.cite{margin-top:12px;border-radius:var(--r);background:var(--sunk);border:1px solid var(--line);border-left:3px solid var(--amber);padding:12px 14px;font-size:.88rem}
-.cite .eyebrow{display:block;margin-bottom:4px;color:var(--amber)}
+.cite{margin-top:12px;border-radius:var(--r);background:var(--gold-soft);border:1px solid #EBD8B6;padding:12px 14px;font-size:.88rem}
+.cite .eyebrow{display:flex;gap:6px;align-items:center;margin-bottom:4px}
 .scores{display:flex;flex-direction:column;gap:12px;min-width:0}
+.scorehead{font-family:var(--font-display);font-weight:700;color:var(--accent);font-size:.95rem}
 .rings{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ring{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:center}
+.ring{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:center;min-width:0}
 .ring svg{flex:none}
-.ring .n{font-family:var(--font-num);font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+.ring .n{font-family:var(--font-display);font-size:1.7rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
 .ring .l{font-size:.8rem;color:var(--muted);line-height:1.4}
-.checks{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:6px 12px;max-height:340px;overflow:auto}
+.checks{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:6px 12px;max-height:360px;overflow:auto}
 .checks details{border-bottom:1px solid var(--line);padding:6px 0}
 .checks details:last-child{border-bottom:0}
 .checks summary{cursor:pointer;font-size:.86rem;display:flex;gap:8px;align-items:baseline;list-style:none}
 .checks summary::-webkit-details-marker{display:none}
 .checks .mk{flex:none;width:18px;text-align:center;font-weight:900}
 .checks .ok .mk{color:var(--good)} .checks .no .mk{color:var(--bad)}
-.checks .w{margin-left:auto;font-family:var(--font-num);color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums}
+.checks .w{margin-left:auto;color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums}
 .checks p{margin:4px 0 2px 26px;font-size:.8rem;color:var(--muted)}
-.grouplabel{font-family:var(--font-num);font-size:.72rem;font-weight:700;letter-spacing:.14em;color:var(--muted);padding:8px 0 2px}
+.grouplabel{font-size:.72rem;font-weight:700;letter-spacing:.18em;color:var(--gold);padding:8px 0 2px}
 .risks{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem}
+.risks b{font-size:.82rem}
 .chip{padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--bad-soft);color:var(--bad)}
 .chip.okc{background:var(--good-soft);color:var(--good)}
+.chip.wc{background:var(--warn-soft);color:var(--warn)}
 
 /* 逐段卡片 */
 .sections{display:flex;flex-direction:column;gap:12px}
-.sec{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
-.sec.key{border-color:rgba(63,216,234,.45);box-shadow:0 0 0 1px rgba(63,216,234,.1),0 0 24px rgba(63,216,234,.08)}
+.sec{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.sec.key{border-color:rgba(46,106,75,.45);box-shadow:inset 3px 0 0 var(--accent2)}
 .sec.key h3{color:var(--accent)}
+.sec.utm{background:var(--surface2)}
 .sechead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px}
-.sechead h3{font-size:.98rem}
+.sechead h3{font-family:var(--font-display);font-size:1rem}
 .md{font-size:.92rem;overflow-wrap:anywhere}
 .md p{margin:.4em 0}
 .md ul,.md ol{margin:.3em 0;padding-left:1.4em}
 .md h4{font-size:.92rem;margin:.7em 0 .2em}
-.md code{background:var(--surface2);padding:0 4px;border-radius:4px;font-size:.85em}
-.md pre{background:var(--surface2);padding:10px;border-radius:8px;overflow-x:auto;font-size:.8rem}
+.md code{background:var(--sunk);padding:0 4px;border-radius:4px;font-size:.85em}
+.md pre{background:var(--sunk);padding:10px;border-radius:8px;overflow-x:auto;font-size:.8rem}
 .tbl{overflow-x:auto}
 .md table{border-collapse:collapse;font-size:.84rem;min-width:100%}
 .md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
-.md th{background:var(--surface2)}
+.md th{background:var(--accent-soft);color:var(--accent)}
 .md .todo{background:var(--warn-soft);color:var(--warn);padding:0 4px;border-radius:4px}
+.utmrow{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:.82rem}
+.utmrow:first-of-type{border-top:0}
+.utmrow code{overflow-wrap:anywhere;background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-size:.76rem}
 .empty{color:var(--muted);font-size:.9rem;padding:24px;text-align:center;border:1px dashed var(--line);border-radius:var(--r)}
 .hist{display:flex;flex-direction:column;gap:8px}
-.hist button{text-align:left;border:1px solid var(--line);background:var(--sunk);color:var(--ink);border-radius:8px;padding:10px 12px;cursor:pointer;font:inherit}
+.hist button{text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;font:inherit}
 .hist button:hover{border-color:var(--accent2)}
 .hist small{color:var(--muted);display:block;font-size:.78rem}
 .guide{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.guide div{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.84rem;color:#C3D1D5}
-.guide b{display:block;margin-bottom:2px;color:var(--ink)}
+.guide div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.84rem;color:var(--muted)}
+.guide b{display:block;margin-bottom:2px;color:var(--accent);font-family:var(--font-display)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <div class="wrap">
 <header class="hero">
-  <div class="hero-img" role="img" aria-label="攝影棚裡三個發光螢幕，播放保養品示範、教學與開箱影片"></div>
+  <div class="hero-img" role="img" aria-label="行銷人在灑滿午後陽光的工作室裡，手放在筆電上思考內容"></div>
   <div class="hero-copy">
-    <span class="kicker">SEO × GEO STUDIO</span>
-    <h1>社群搜尋<em>引用</em>文案台</h1>
-    <p>輸入主題與關鍵字，一次產出三個平台的寫法：站內搜尋找得到，Google 與 AI 引擎願意引用。現有貼文也能貼進來健檢打分。</p>
-    <div class="stamps" role="group" aria-label="切換平台工作區">
-      <button type="button" class="stamp ws" data-ws="fb" aria-pressed="false">Facebook</button>
-      <button type="button" class="stamp ws" data-ws="ig" aria-pressed="false">Instagram</button>
-      <button type="button" class="stamp ws" data-ws="th" aria-pressed="false">Threads</button>
-      <span class="stamp amb">AI 引用分數</span>
+    <div class="titleblock">
+      <span class="kicker">SEO × GEO × SOCIAL</span>
+      <h1>SEO／GEO 文案生成器</h1>
+      <p class="sub">讓好內容，被搜尋、被 AI 看見</p>
+      <div class="swoosh" aria-hidden="true"></div>
     </div>
-    <span class="wshint" id="ws-hint">點選平台，整頁切換成該平台的工作區</span>
+    <p class="lead">填一份簡報單，產出 FB、IG、Threads 三種寫法：站內搜尋找得到，Google 與 AI 引擎願意引用。現有貼文也能貼進來健檢打分。</p>
+    <div class="pcards" role="group" aria-label="切換平台工作區">
+      <button type="button" class="pcard ws" data-ws="fb" aria-pressed="false"><span class="ok" aria-hidden="true">✓</span>
+        <span class="ph"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1877F2"/><path d="M13.2 19v-6h2l.3-2.4h-2.3V9.2c0-.7.2-1.1 1.2-1.1h1.2V6c-.2 0-1-.1-1.9-.1-1.9 0-3.1 1.1-3.1 3.2v1.6H8.5V13h2.1v6z" fill="#fff"/></svg>FB</span>
+        <small>長文教學・連結放置頂留言</small></button>
+      <button type="button" class="pcard ws" data-ws="ig" aria-pressed="false"><span class="ok" aria-hidden="true">✓</span>
+        <span class="ph"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F9A43A"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#7B3FE4"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="6.5" fill="url(#igg)"/><rect x="6" y="6" width="12" height="12" rx="3.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.3" cy="7.7" r="1" fill="#fff"/></svg>IG</span>
+        <small>圖說＋輪播・連結放個人檔案</small></button>
+      <button type="button" class="pcard ws" data-ws="th" aria-pressed="false"><span class="ok" aria-hidden="true">✓</span>
+        <span class="ph"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#111"/><text x="12" y="16.6" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#fff">@</text></svg>Threads</span>
+        <small>串文對話・一則一個重點</small></button>
+    </div>
+    <div class="ribbon"><span class="r">一份觀點，延伸三平台內容</span><span class="wshint" id="ws-hint">點選平台，整頁切換成該平台的工作區</span></div>
   </div>
 </header>
 <div class="pwa-note" id="pwa-note" hidden>
@@ -221,8 +249,21 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
       <small>一行一個。可從 FB 搜尋框、Google「其他人也問了」、留言區常見問題蒐集。</small></div>
     <div class="field"><label for="f-aud">目標受眾</label>
       <input type="text" id="f-aud" value="25–40 歲通勤上班族女性，容易泛紅、怕悶痘"></div>
-    <div class="field"><label for="f-who">發文身分與經驗（E-E-A-T）</label>
-      <input type="text" id="f-who" value="保養品牌教育講師，教學 10 年"></div>
+    <div class="row2">
+      <div class="field"><label for="f-brand">品牌或帳號名稱</label>
+        <input type="text" id="f-brand" placeholder="例如：○○保養研究室" value="肌膚日常研究室">
+        <small>AI 引用時會記住「誰說的」，建議填。</small></div>
+      <div class="field"><label for="f-who">發文身分與經驗</label>
+        <input type="text" id="f-who" value="保養品牌教育講師，教學 10 年">
+        <small>E-E-A-T 的經驗與專業。</small></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="f-must">必提用語</label>
+        <input type="text" id="f-must" placeholder="品牌名、產品名，用頓號分隔"></div>
+      <div class="field"><label for="f-ban">品牌禁用詞</label>
+        <input type="text" id="f-ban" value="便宜、最強">
+        <small>健檢時也會標出來。</small></div>
+    </div>
     <div class="field"><label for="f-facts">可用的事實與數據（附來源）</label>
       <textarea id="f-facts" rows="4">SPF30 約阻擋 97% UVB、SPF50 約 98%（常見皮膚科衛教資料）
 防曬係數測試用量為每平方公分 2 毫克（ISO 24444 國際標準）
@@ -240,9 +281,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
       <div class="field"><label for="f-cta">行動呼籲</label>
         <input type="text" id="f-cta" value="留言分享膚況，下一篇幫你挑"></div>
     </div>
-    <div class="field"><label for="f-link">要放的連結</label>
-      <input type="text" id="f-link" placeholder="商品頁、文章或表單網址（會放在置頂留言）">
-      <small>FB 放置頂留言、IG 放個人檔案、Threads 放在串文最後一則。</small></div>
+    <div class="row2">
+      <div class="field"><label for="f-link">要放的連結</label>
+        <input type="text" id="f-link" placeholder="https://…" value="https://example.com/sunscreen-guide">
+        <small>FB 放置頂留言、IG 放個人檔案、Threads 放最後一則。</small></div>
+      <div class="field"><label for="f-camp">活動代碼（UTM）</label>
+        <input type="text" id="f-camp" placeholder="例如 sunscreen-2026q4" value="sunscreen-2026q4">
+        <small>自動產生三平台追蹤連結，GA4 可分開看成效。</small></div>
+    </div>
     <div class="btns">
       <button class="btn primary" id="g-go" type="submit">用 Claude 生成</button>
       <button class="btn" id="g-stop" type="button" hidden>停止</button>
@@ -456,7 +502,7 @@ function analyze(text,kw,longs,ind,plat){
   const sc=a=>a.reduce((s,c)=>s+(c.ok?c.w:0),0);
   const rw=RISK[ind]||[];
   const risks=[...new Set(rw.filter(w=>t.includes(w)))];
-  return{seo,geo,seoS:sc(seo),geoS:sc(geo),risks,ind,empty:!t,plat};
+  return{seo,geo,seoS:sc(seo),geoS:sc(geo),risks,ind,empty:!t,plat,text:t};
 }
 function ring(n,label,sub){
   const r=26,c=2*Math.PI*r,col=n>=80?"var(--good)":n>=60?"var(--warn)":"var(--bad)";
@@ -466,9 +512,13 @@ function renderScores(el,a){
   if(a.empty){el.innerHTML='<div class="empty">貼文內容出現後會自動打分。</div>';return}
   const list=(arr)=>arr.map(c=>`<details class="${c.ok?"ok":"no"}"${c.ok?"":" open"}><summary><span class="mk">${c.ok?"✓":"✕"}</span><span>${esc(c.label)}</span><span class="w">${c.ok?c.w:0}/${c.w}</span></summary>${c.ok?"":`<p>${esc(c.tip)}</p>`}</details>`).join("");
   const riskTxt=a.ind==="gen"?"":(a.risks.length?a.risks.map(w=>`<span class="chip">${esc(w)}</span>`).join("")+'<span class="status">建議送合規文案工作台複查</span>':'<span class="chip okc">未比對到常見違規詞</span>');
-  const pn=(PLAT[a.plat]||PLAT.fb).short;
-  el.innerHTML=`<div class="rings">${ring(a.seoS,pn+" SEO 分數","找得到")}${ring(a.geoS,pn+" GEO 分數","被引用")}</div>
-  ${riskTxt?`<div class="risks"><b style="font-size:.82rem">法規用詞</b>${riskTxt}</div>`:""}
+  const pn=(PLAT[a.plat]||PLAT.fb).name;
+  const terms=id=>$("#"+id).value.split(/[、,，\s]+/).map(s=>s.trim()).filter(Boolean);
+  const banHit=terms("f-ban").filter(w=>a.text.includes(w)),mustMiss=terms("f-must").filter(w=>!a.text.includes(w));
+  const brandTxt=(terms("f-ban").length||terms("f-must").length)?(banHit.map(w=>`<span class="chip">禁用：${esc(w)}</span>`).join("")+mustMiss.map(w=>`<span class="chip wc">未提到：${esc(w)}</span>`).join("")||'<span class="chip okc">符合品牌用語</span>'):"";
+  el.innerHTML=`<div class="scorehead">${esc(pn)} 貼文評分</div><div class="rings">${ring(a.seoS,"SEO 分數","站內搜尋與 Google")}${ring(a.geoS,"GEO 分數","AI 引擎引用")}</div>
+  ${riskTxt?`<div class="risks"><b>法規用詞</b>${riskTxt}</div>`:""}
+  ${brandTxt?`<div class="risks"><b>品牌用語</b>${brandTxt}</div>`:""}
   <div class="checks"><div class="grouplabel">SEO</div>${list(a.seo)}<div class="grouplabel">GEO</div>${list(a.geo)}</div>`;
 }
 
@@ -502,7 +552,8 @@ function renderPreview(post,cite,plat){
     $("#pv-text").innerHTML=fmt(shown)+(cut?`… <span class="more">${plat==="ig"?"更多":"查看更多"}</span>`:"");
   }
   $("#pv-cite").textContent=cite||"生成後顯示最可能被摘錄的段落。";
-  const who=$("#f-who").value.trim();$("#pv-av").textContent=(who||"你")[0];
+  const brand=$("#f-brand").value.trim(),who=$("#f-who").value.trim();
+  $("#pv-name").textContent=brand||"你的帳號";$("#pv-av").textContent=(brand||who||"你")[0];
 }
 let current="",curPlat="fb",ws=(["all","fb","ig","th"].includes(store.get("ws","all"))?store.get("ws","all"):"all");
 function drawPlat(){
@@ -523,8 +574,27 @@ function renderOutput(text,{final=false}={}){
   $("#pv-plats").querySelectorAll("button").forEach(b=>b.onclick=()=>{curPlat=b.dataset.p;$("#pv-plats").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",String(x===b)));drawPlat()});
   $("#o-sections").innerHTML=secs.length?secs.map((s,i)=>`<article class="sec${/貼文主文|IG 圖說|Threads 串文|可引用/.test(s.title)?" key":""}"><div class="sechead"><h3>${esc(s.title||"說明")}</h3><button class="btn sm" type="button" data-copy="${i}">複製</button></div><div class="md">${md(s.body)}</div></article>`).join(""):'<div class="empty">尚未產生內容。</div>';
   $("#o-sections").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copy(plain(secs[+b.dataset.copy].body).trim(),$("#g-status")));
+  const links=utmLinks();
+  if(links.length&&secs.length){
+    const card=document.createElement("article");card.className="sec utm";
+    card.innerHTML=`<div class="sechead"><h3>追蹤連結（UTM）</h3><span class="status">在 GA4「流量開發」可依平台分開看成效</span></div>`+links.map(l=>`<div class="utmrow"><b>${esc(l.name)}</b><code>${esc(l.url)}</code><button class="btn sm" type="button">複製</button></div>`).join("");
+    card.querySelectorAll(".utmrow button").forEach((b,i)=>b.onclick=()=>copy(links[i].url,$("#g-status")));
+    $("#o-sections").prepend(card);
+  }
   drawPlat();
 }
+const UTM_SRC={fb:"facebook",ig:"instagram",th:"threads"};
+function utmLinks(){
+  const raw=$("#f-link").value.trim();if(!raw)return[];
+  let base;try{base=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw)}catch(e){return[]}
+  const camp=($("#f-camp").value.trim()||"post-"+new Date().toISOString().slice(0,10).replace(/-/g,"")).replace(/\s+/g,"-");
+  const ps=ws==="all"?["fb","ig","th"]:[ws];
+  return ps.map(k=>{const u=new URL(base.href);u.searchParams.set("utm_source",UTM_SRC[k]);u.searchParams.set("utm_medium","social");u.searchParams.set("utm_campaign",camp);
+    if(k==="ig")u.searchParams.set("utm_content","bio");return{name:PLAT[k].name,url:u.href}});
+}
+["f-link","f-camp"].forEach(id=>$("#"+id).addEventListener("change",()=>renderOutput(current,{final:true})));
+$("#f-brand").addEventListener("input",drawPlat);
+["f-ban","f-must"].forEach(id=>$("#"+id).addEventListener("input",()=>{drawPlat();runChk()}));
 async function copy(t,st){
   try{await navigator.clipboard.writeText(t);st.className="status";st.textContent="已複製。"}
   catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
@@ -551,7 +621,8 @@ const RULES=`你是熟悉 Facebook、Instagram、Threads 演算法、Google SEO 
 - GEO：答案先行（「X 是…」「答案是…」）；每個段落拿出來單獨看也成立；具體數字一定附出處；用 Q／A 一問一答，每個答案 40–80 字；寫出發文者身分與經驗（E-E-A-T）；標註「${new Date().getFullYear()} 年整理」；不用「最強、神級、保證、100%」等誇飾。
 - 誠實：只使用使用者提供的事實與數據，或普遍公認、可查證的常識；沒有依據的數字一律寫成〔待補：需要什麼資料〕，絕不編造研究、數據、醫師或客戶見證。
 - 語言：全部使用繁體中文與台灣用語。`;
-function getForm(){const g=id=>$("#"+id).value.trim();return{plat:g("f-plat"),topic:g("f-topic"),kw:g("f-kw"),long:g("f-long"),aud:g("f-aud"),who:g("f-who"),facts:g("f-facts"),type:g("f-type"),tone:g("f-tone"),len:g("f-len"),cta:g("f-cta"),ind:g("f-ind"),link:g("f-link")}}
+const FORM_IDS={plat:"f-plat",topic:"f-topic",kw:"f-kw",long:"f-long",aud:"f-aud",brand:"f-brand",who:"f-who",must:"f-must",ban:"f-ban",facts:"f-facts",type:"f-type",tone:"f-tone",len:"f-len",cta:"f-cta",ind:"f-ind",link:"f-link",camp:"f-camp"};
+function getForm(){const d={};for(const[k,id]of Object.entries(FORM_IDS))d[k]=$("#"+id).value.trim();return d}
 function genPrompt(d){
 const ps=d.plat==="all"?["fb","ig","th"]:[d.plat];
 const s2=ps.map(k=>({
@@ -573,14 +644,17 @@ ${pr}
 長尾關鍵字／常見問題：
 ${d.long||"（未提供，請自行推估 3–5 個台灣使用者會搜尋的問句）"}
 目標受眾：${d.aud||"（未提供）"}
+品牌或帳號名稱：${d.brand||"（未提供）"}
 發文身分與經驗：${d.who||"（未提供，請用〔待補：發文者身分〕）"}
+必須自然提到的用語：${d.must||"（無）"}
+品牌禁用詞（全文不可出現）：${d.ban||"（無）"}
 可用的事實與數據：
 ${d.facts||"（未提供）"}
 貼文類型：${d.type}
 語氣：${d.tone}
 發文平台：${ps.map(k=>PLAT[k].name).join("、")}
 行動呼籲：${d.cta||"（自行設計）"}
-要放的連結：${d.link||"（無）"}
+要放的連結：${d.link?utmLinks().map(l=>l.name+"："+l.url).join("\n")||d.link:"（無）"}
 
 請嚴格依照以下標題與順序輸出 Markdown，標題文字不可更改，標題前後不要加任何其他說明：
 ## 1. 搜尋意圖與關鍵字地圖
@@ -593,7 +667,7 @@ ${s2}
 ## 5. FAQ
 3–5 組，用「Q：」「A：」格式，A 為 40–80 字。
 ## 6. 置頂留言與連結安排
-${ps.includes("fb")?"FB：一則置頂留言，補充重點":"補充重點"}${d.link?"，並放入連結 "+d.link:""}，最後一句再邀請留言。${ps.includes("ig")?"IG：第一則留言內容，以及個人檔案連結文字建議。":""}${ps.includes("th")?"Threads：說明連結放在第幾則、要不要自己回覆補充。":""}
+${ps.includes("fb")?"FB：一則置頂留言，補充重點":"補充重點"}${d.link?"，並放入對應平台的追蹤連結（照抄上方網址，不可改動）":""}，最後一句再邀請留言。${ps.includes("ig")?"IG：第一則留言內容，以及個人檔案連結文字建議。":""}${ps.includes("th")?"Threads：說明連結放在第幾則、要不要自己回覆補充。":""}
 ## 7. 圖卡文字與替代文字
 ${ps.includes("ig")?"IG 輪播 5 張：每張的主標（12 字內）與 1–2 行內文，第 1 張含核心關鍵字、最後一張是懶人包或行動呼籲。":"1 張封面圖卡的主標（12 字內）與副標。"}並附圖片替代文字（alt text，含核心關鍵字，40 字內）。
 ## 8. 優化說明與待補資料
@@ -621,7 +695,7 @@ $("#gen-form").addEventListener("submit",async ev=>{
   }finally{$("#g-go").disabled=false;$("#g-stop").hidden=true}
 });
 $("#g-stop").onclick=()=>genCtl&&genCtl.abort();
-$("#g-clear").onclick=()=>{["f-topic","f-kw","f-long","f-aud","f-who","f-facts","f-cta","f-link"].forEach(id=>$("#"+id).value="");$("#ex-tag").hidden=true;$("#f-topic").focus()};
+$("#g-clear").onclick=()=>{["f-topic","f-kw","f-long","f-aud","f-brand","f-who","f-must","f-ban","f-facts","f-cta","f-link","f-camp"].forEach(id=>$("#"+id).value="");$("#ex-tag").hidden=true;$("#f-topic").focus()};
 ["f-topic","f-kw","f-long","f-facts"].forEach(id=>$("#"+id).addEventListener("input",()=>$("#ex-tag").hidden=true));
 
 /* ---------- 健檢與改寫 ---------- */
@@ -648,6 +722,8 @@ $("#h-go").onclick=async()=>{
 未通過的項目：
 ${fails}
 ${a.risks.length?"可能違規的用詞："+a.risks.join("、"):""}
+${$("#f-ban").value.trim()?"品牌禁用詞（不可出現）："+$("#f-ban").value.trim():""}
+${$("#f-must").value.trim()?"必須提到："+$("#f-must").value.trim():""}
 
 【原貼文】
 ${txt}
@@ -680,7 +756,7 @@ function renderHist(){
   if(!h.length){el.innerHTML='<div class="empty">還沒有生成紀錄。到「生成貼文」填好簡報單、按「用 Claude 生成」就會出現在這裡。</div>';return}
   el.innerHTML=h.map((x,i)=>`<button type="button" data-i="${i}"><b>${esc(x.d.topic)}</b><small>${esc(x.d.kw)}・${esc(x.d.plat==="all"?"三平台":(PLAT[x.d.plat]||PLAT.fb).short)}・${esc(x.d.type)}・${new Date(x.ts).toLocaleString("zh-TW",{hour12:false})}</small></button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>{const x=h[+b.dataset.i];
-    Object.entries({plat:"f-plat",topic:"f-topic",kw:"f-kw",long:"f-long",aud:"f-aud",who:"f-who",facts:"f-facts",type:"f-type",tone:"f-tone",len:"f-len",cta:"f-cta",ind:"f-ind",link:"f-link"}).forEach(([k,id])=>{if(x.d[k]!=null)$("#"+id).value=x.d[k]});
+    Object.entries(FORM_IDS).forEach(([k,id])=>{if(x.d[k]!=null)$("#"+id).value=x.d[k]});
     $("#ex-tag").hidden=true;$("#out-tag").hidden=true;current=x.text;ws=x.d.plat||"all";applyWS();show("gen")});
 }
 
